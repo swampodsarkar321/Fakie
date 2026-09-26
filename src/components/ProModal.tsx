@@ -8,14 +8,24 @@ export default function ProModal({ open, onClose }: { open: boolean; onClose: ()
   const [method, setMethod] = useState("bKash");
   const [trx, setTrx] = useState("");
   const [sent, setSent] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
   if (!open) return null;
   const price = plan === "monthly" ? 8 : 60;
   const buy = async () => {
+    setErr("");
     const u = auth.currentUser;
-    if (!u) return alert("Please login with Google first");
-    if (!trx.trim()) return alert("Please enter your Transaction ID");
-    await push(dbRef(db, "payments"), { uid: u.uid, name: u.displayName, email: u.email, plan, price, method, trx: trx.trim(), status: "pending", at: Date.now() }).catch(() => {});
-    setSent(true);
+    if (!u) { setErr("Please login with Google first (top-right button)."); return; }
+    if (!trx.trim()) { setErr("Please enter your Transaction ID."); return; }
+    setBusy(true);
+    try {
+      await push(dbRef(db, "payments"), { uid: u.uid, name: u.displayName, email: u.email, plan, price, method, trx: trx.trim(), status: "pending", at: Date.now() });
+      setSent(true);
+    } catch (e: any) {
+      setErr("Submit failed: " + (e?.message || "database blocked") + " — Firebase Rules check koro.");
+    } finally {
+      setBusy(false);
+    }
   };
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={onClose}>
@@ -31,7 +41,8 @@ export default function ProModal({ open, onClose }: { open: boolean; onClose: ()
             <div className="font-bold">Yearly</div><div className="text-[20px] font-extrabold">$60<span className="text-[13px] font-medium text-zinc-500">/yr</span></div>
           </button>
         </div>
-        <button onClick={buy} className="w-full bg-black text-white font-bold py-3.5 rounded-full mt-4">I Paid ${price} — Submit</button>
+        <button onClick={buy} disabled={busy} className="w-full bg-black text-white font-bold py-3.5 rounded-full mt-4 disabled:opacity-60">{busy ? "Submitting…" : `I Paid $${price} — Submit`}</button>
+        {err && <div className="text-[13px] font-bold text-red-600 mt-2.5">{err}</div>}
         <div className="bg-zinc-50 border border-black/10 rounded-2xl p-3.5 mt-3 text-left">
           <div className="text-[13px] font-bold">Pay manually:</div>
           <div className="flex gap-2 mt-2">
