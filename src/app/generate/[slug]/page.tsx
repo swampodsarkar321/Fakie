@@ -639,7 +639,7 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
       </div>
       <div className="flex-1 flex items-start justify-center p-6 bg-white border border-black/10 rounded-2xl shadow-sm" style={{ backgroundImage: "radial-gradient(#d4d4d8 1px, transparent 1px)", backgroundSize: "20px 20px" }}>
         <div>
-        <div ref={ref} className={`${frameless ? "rounded-xl" : "rounded-[3rem] border-[12px] border-black shadow-[0_0_0_2px_#e5e5e5]"} w-[375px] overflow-hidden relative`}>
+        <div ref={ref} data-protected="1" className={`${frameless ? "rounded-xl" : "rounded-[3rem] border-[12px] border-black shadow-[0_0_0_2px_#e5e5e5]"} w-[375px] overflow-hidden relative select-none`}>
           {gen.kind === "ai-chat" ? <AIView slug={slug} msgs={msgs} />
             : gen.kind === "post" ? <PostView slug={slug} name={name} msgs={msgs} img={img} avatar={avatar} verified={verified} />
             : gen.kind === "comments" ? <CommentsView slug={slug} msgs={msgs} />
