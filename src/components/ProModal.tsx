@@ -1,19 +1,21 @@
 "use client";
 import { useState } from "react";
 import { auth, db } from "@/lib/firebase";
-import { ref as dbRef, set } from "firebase/database";
+import { ref as dbRef, set, push } from "firebase/database";
 
 export default function ProModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [plan, setPlan] = useState<"monthly" | "yearly">("monthly");
+  const [method, setMethod] = useState("bKash");
+  const [trx, setTrx] = useState("");
+  const [sent, setSent] = useState(false);
   if (!open) return null;
   const price = plan === "monthly" ? 8 : 60;
   const buy = async () => {
     const u = auth.currentUser;
     if (!u) return alert("Please login with Google first");
-    // Stripe/Paddle checkout link ekhane bosbe
-    await set(dbRef(db, `users/${u.uid}/pro`), { plan, price, status: "pending", createdAt: Date.now() }).catch(() => {});
-    alert(`Checkout: $${price} ${plan} — payment link coming soon.`);
-    onClose();
+    if (!trx.trim()) return alert("Please enter your Transaction ID");
+    await push(dbRef(db, "payments"), { uid: u.uid, name: u.displayName, email: u.email, plan, price, method, trx: trx.trim(), status: "pending", at: Date.now() }).catch(() => {});
+    setSent(true);
   };
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={onClose}>
@@ -29,7 +31,18 @@ export default function ProModal({ open, onClose }: { open: boolean; onClose: ()
             <div className="font-bold">Yearly</div><div className="text-[20px] font-extrabold">$60<span className="text-[13px] font-medium text-zinc-500">/yr</span></div>
           </button>
         </div>
-        <button onClick={buy} className="w-full bg-black text-white font-bold py-3.5 rounded-full mt-5">Buy Pro — ${price}</button>
+        <button onClick={buy} className="w-full bg-black text-white font-bold py-3.5 rounded-full mt-4">I Paid ${price} — Submit</button>
+        <div className="bg-zinc-50 border border-black/10 rounded-2xl p-3.5 mt-3 text-left">
+          <div className="text-[13px] font-bold">Pay manually:</div>
+          <div className="flex gap-2 mt-2">
+            {["bKash", "Nagad", "Rocket"].map((m) => (
+              <button key={m} onClick={() => setMethod(m)} className={`flex-1 text-[13px] font-bold py-2 rounded-xl border-2 ${method === m ? "border-black" : "border-black/10 text-zinc-500"}`}>{m}</button>
+            ))}
+          </div>
+          <div className="text-[14px] mt-2.5">Send <b>${price}</b> to <b className="select-all">01XXXXXXXXX</b></div>
+          <input value={trx} onChange={(e) => setTrx(e.target.value)} placeholder="Transaction ID (TrxID)" className="mt-2 w-full border border-black/15 rounded-xl px-3.5 py-2.5 text-[14px] outline-none" />
+        </div>
+        {sent && <div className="text-[13px] font-bold text-green-600 mt-3">✓ Received! Pro will activate after admin approval.</div>}
         <button onClick={onClose} className="w-full text-[13px] text-zinc-500 mt-2.5">Maybe later</button>
       </div>
     </div>
