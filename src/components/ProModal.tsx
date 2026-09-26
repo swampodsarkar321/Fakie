@@ -30,7 +30,7 @@ export default function ProModal({ open, onClose }: { open: boolean; onClose: ()
           </button>
         </div>
         <button onClick={buy} className="w-full bg-black text-white font-bold py-3.5 rounded-full mt-5">Buy Pro — ${price}</button>
-        <button onClick={onClose} className="w-full text-[13px] text-zinc-500 mt-2.5"> pore korbo</button>
+        <button onClick={onClose} className="w-full text-[13px] text-zinc-500 mt-2.5">Maybe later</button>
       </div>
     </div>
   );

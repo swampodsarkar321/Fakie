@@ -480,6 +480,8 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
   const [asMe, setAsMe] = useState(false);
   const [img, setImg] = useState<string | null>(null);
   const [proOpen, setProOpen] = useState(false);
+  const [adGate, setAdGate] = useState(false);
+  const [count, setCount] = useState(5);
   const [isPro, setIsPro] = useState(false);
   useEffect(() => {
     const un = onAuthStateChanged(auth, (u) => {
@@ -498,9 +500,25 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
   };
   if (!gen) return <div className="p-10 text-white">Not found</div>;
   const add = () => { if (!draft.trim()) return; setMsgs([...msgs, { me: asMe, text: draft, time: "09:44" }]); setDraft(""); };
-  const exportPng = async () => { if (!ref.current) return; const url = await toPng(ref.current, { cacheBust: true, pixelRatio: 3 }); const a = document.createElement("a"); a.download = `${gen.slug}.png`; a.href = url; a.click();
+  useEffect(() => {
+    if (!adGate) return;
+    setCount(5);
+    const t = setInterval(() => setCount((c) => {
+      if (c <= 1) { clearInterval(t); return 0; }
+      return c - 1;
+    }), 1000);
+    return () => clearInterval(t);
+  }, [adGate]);
+  const doDownload = async () => {
+    if (!ref.current) return;
+    const url = await toPng(ref.current, { cacheBust: true, pixelRatio: isPro ? 3 : 1 });
+    const a = document.createElement("a"); a.download = `${gen.slug}${isPro ? "-hd" : ""}.png`; a.href = url; a.click();
     const u = auth.currentUser;
     if (u) set(dbRef(db, `users/${u.uid}/designs/${Date.now()}`), { slug, name, msgs, createdAt: Date.now() }).catch(() => {});
+  };
+  const exportPng = async () => {
+    if (isPro) return doDownload();
+    setAdGate(true); // free user: protibar ad dekhe download
   };
   return (
     <div className="min-h-screen bg-[#f4f4f5] text-black">
@@ -534,8 +552,8 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
           {msgs.map((m, i) => (<div key={i} className="group flex items-center gap-2 bg-[#f4f4f5] rounded-xl px-3 py-2 text-[13px]"><span className={`w-1.5 h-1.5 rounded-full shrink-0 ${m.me ? "bg-green-500" : "bg-zinc-400"}`} /><span className="truncate flex-1">{m.text}</span><button onClick={() => setMsgs(msgs.filter((_, j) => j !== i))} className="opacity-0 group-hover:opacity-100 text-zinc-400 hover:text-red-500 text-sm">✕</button></div>))}
         </div>
         <div className="flex items-center justify-between text-[13px] font-medium text-zinc-500"><span>Device frame</span><button onClick={() => setFrameless(!frameless)} className={`w-10 h-[22px] rounded-full p-0.5 transition ${frameless ? "bg-zinc-300" : "bg-green-500"}`}><span className={`block w-5 h-5 bg-white rounded-full shadow transition ${frameless ? "" : "ml-auto"}`} /></button></div>
-        <button onClick={exportPng} className="w-full bg-black text-white font-bold py-3 rounded-xl hover:bg-zinc-800">Export PNG ↓</button>
-        <p className="text-center text-[12px] text-zinc-400">Free with watermark • <button onClick={() => setProOpen(true)} className="underline font-semibold text-black">Remove watermark</button></p>
+        <button onClick={exportPng} className="w-full bg-black text-white font-bold py-3 rounded-xl hover:bg-zinc-800">{isPro ? "Export HD PNG ↓" : "Download (Free) ↓"}</button>
+        <p className="text-center text-[12px] text-zinc-400">{isPro ? "HD quality • No ads" : "Standard quality • Ad required"} • <button onClick={() => setProOpen(true)} className="underline font-semibold text-black">Go Pro HD</button></p>
         {!isPro && <AdSlot slot="editor-sidebar" />}
       </div>
       <div className="flex-1 flex items-start justify-center p-6 bg-white border border-black/10 rounded-2xl shadow-sm" style={{ backgroundImage: "radial-gradient(#d4d4d8 1px, transparent 1px)", backgroundSize: "20px 20px" }}>
@@ -549,12 +567,27 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
             : gen.kind === "notification" ? <NotifView name={name} msgs={msgs} />
             : gen.kind === "tool" ? <ToolView slug={slug} name={name} />
             : <ChatView slug={slug} name={name} msgs={msgs} self={gen.bubbleSelf} other={gen.bubbleOther} dark={dark} img={img} />}
-          {!isPro && <div className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-[0.13]"><span className="text-[13px] font-bold text-[#0084ff] -rotate-[24deg]">Remove watermark — fakie.</span></div>}
         </div>
-        {!isPro && <p className="text-center text-[12px] text-zinc-400 mt-3">Free export with watermark • <button onClick={() => setProOpen(true)} className="underline font-semibold text-black">Go Pro — $8/mo</button></p>}
+        <p className="text-center text-[12px] text-zinc-400 mt-3">{isPro ? "HD export • No ads" : "Free export (standard quality)"} • <button onClick={() => setProOpen(true)} className="underline font-semibold text-black">Go Pro — HD $8/mo</button></p>
         {!isPro && <AdSlot slot="preview-bottom" />}
         </div>
       </div>
+      {adGate && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl p-6 w-full max-w-[340px] text-center">
+            <b className="text-[17px]">Watch ad to download</b>
+            <p className="text-[13px] text-zinc-500 mt-1">Free download after the ad • Pro = instant HD, no ads</p>
+            <AdSlot slot="download-gate" />
+            {count > 0 ? (
+              <div className="text-[14px] font-bold text-zinc-500">Download in {count}s…</div>
+            ) : (
+              <button onClick={() => { setAdGate(false); doDownload(); }} className="w-full bg-black text-white font-bold py-3 rounded-xl">Download PNG</button>
+            )}
+            <button onClick={() => setProOpen(true)} className="w-full text-[13px] font-bold mt-2.5 text-black underline">Skip ads forever — Go Pro</button>
+            <button onClick={() => setAdGate(false)} className="text-[12px] text-zinc-400 mt-1.5">Maybe later</button>
+          </div>
+        </div>
+      )}
     </div>
     </div>
   );
