@@ -629,11 +629,18 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
           {msgs.map((m, i) => (<div key={i} className="group flex items-center gap-2 bg-[#f4f4f5] rounded-xl px-3 py-2 text-[13px]"><span className={`w-1.5 h-1.5 rounded-full shrink-0 ${m.me ? "bg-green-500" : "bg-zinc-400"}`} /><span className="truncate flex-1">{m.text}</span><button onClick={() => setMsgs(msgs.filter((_, j) => j !== i))} className="opacity-0 group-hover:opacity-100 text-zinc-400 hover:text-red-500 text-sm">✕</button></div>))}
         </div>
         <div className="flex items-center justify-between text-[13px] font-medium text-zinc-500"><span>Device frame</span><button onClick={() => setFrameless(!frameless)} className={`w-10 h-[22px] rounded-full p-0.5 transition ${frameless ? "bg-zinc-300" : "bg-green-500"}`}><span className={`block w-5 h-5 bg-white rounded-full shadow transition ${frameless ? "" : "ml-auto"}`} /></button></div>
-        <div className="grid grid-cols-2 gap-2">
-          <button onClick={exportSD} disabled={dlBusy} className="bg-white border-2 border-black font-bold py-3 rounded-xl hover:bg-zinc-50 disabled:opacity-60 text-[14px]">Standard ↓<span className="block text-[11px] font-medium text-zinc-500">1 ad</span></button>
-          <button onClick={exportPng} disabled={dlBusy} className="bg-black text-white font-bold py-3 rounded-xl hover:bg-zinc-800 disabled:opacity-60 text-[14px]">{dlBusy ? "Saving…" : "HD ↓"}<span className="block text-[11px] font-medium opacity-60">2 ads</span></button>
+        <div className="space-y-2">
+          <button onClick={exportPng} disabled={dlBusy} className="w-full text-white font-bold py-3.5 px-4 rounded-2xl disabled:opacity-60 flex items-center justify-center gap-2.5 shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/30 hover:-translate-y-px transition-all" style={{ background: "linear-gradient(135deg,#4f46e5,#7c3aed)" }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 20h16" /></svg>
+            {dlBusy ? "Saving…" : "Download HD"}
+            <span className="text-[10px] font-extrabold bg-white/20 px-2 py-0.5 rounded-full">2 ADS</span>
+          </button>
+          <button onClick={exportSD} disabled={dlBusy} className="w-full bg-white font-semibold py-2.5 rounded-2xl hover:bg-zinc-50 disabled:opacity-60 text-[13.5px] text-zinc-600 border border-black/10 flex items-center justify-center gap-2 transition-all">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 20h16" /></svg>
+            Standard quality <span className="text-zinc-400">• 1 ad</span>
+          </button>
         </div>
-        <p className="text-center text-[12px] text-zinc-400">Standard = 1 ad • HD = 2 ads</p>
+        <p className="text-center text-[12px] text-zinc-400">Free forever • HD after 2 short ads</p>
         {!isPro && <AdSlot slot="editor-sidebar" />}
       </div>
       <div className="flex-1 flex items-start justify-center p-6 bg-white border border-black/10 rounded-2xl shadow-sm" style={{ backgroundImage: "radial-gradient(#d4d4d8 1px, transparent 1px)", backgroundSize: "20px 20px" }}>
