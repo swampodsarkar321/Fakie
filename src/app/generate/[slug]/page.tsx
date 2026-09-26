@@ -9,7 +9,7 @@ import ProModal from "@/components/ProModal";
 import { auth, db } from "@/lib/firebase";
 import { ref as dbRef, set } from "firebase/database";
 
-type Msg = { me: boolean; text: string; time: string };
+type Msg = { me: boolean; text: string; time: string; seen?: "sent" | "delivered" | "seen" };
 
 // ---------- SVG icon set (no emoji anywhere in preview) ----------
 const S = (p: any) => p;
@@ -56,7 +56,7 @@ const Verified = ({ size = 15 }: { size?: number }) => (
 );
 
 // ---------- CHAT ----------
-function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified }: any) {
+function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified, dateLabel }: any) {
   const wa = slug.includes("whatsapp"), im = slug.includes("imessage"), dc = slug.includes("discord"), tg = slug.includes("telegram"), ms = slug.includes("messenger"), ig = slug.includes("instagram"), fv = slug.includes("fiverr");
   if (fv) {
     return (
@@ -112,12 +112,13 @@ function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified }
           <div className="ml-auto flex items-center gap-3 pr-2">{I.phone()}{I.video()}</div>
         </div>
         <div className="px-4 py-3 space-y-2 min-h-[460px]">
-          <div className="text-center text-[12px] text-zinc-500">September 26, 2026 at 9:16 AM</div>
+          <div className="text-center text-[12px] text-zinc-500">{slug.includes("messenger") ? `${dateLabel === "Today" ? "September 26, 2026" : dateLabel} at 9:16 AM` : dateLabel}</div>
           {msgs.map((m: Msg, i: number) => m.me ? (
             <div key={i} className="flex justify-end"><div className="text-white text-[15px] px-3 py-2 rounded-[18px] max-w-[75%]" style={{ background: ms ? "linear-gradient(90deg,#a334fa,#0084ff)" : "#3797f0" }}>{m.text}</div></div>
           ) : (
             <div key={i} className="flex items-end gap-1.5">{avatar ? <img src={avatar} className="w-6 h-6 rounded-full object-cover shrink-0" alt="" /> : <div className="w-6 h-6 rounded-full bg-[#e4e6eb] text-[10px] flex items-center justify-center font-bold text-zinc-500 shrink-0">{name[0]}</div>}<div className="bg-[#e4e6eb] text-[15px] px-3 py-2 rounded-[18px] max-w-[75%]">{m.text}</div></div>
           ))}
+          {(() => { const last = [...msgs].reverse().find((m) => m.me && m.seen === "seen"); return last ? (<div className="flex justify-end items-center gap-1 text-[11px] text-zinc-500">{avatar ? <img src={avatar} className="w-3.5 h-3.5 rounded-full object-cover" alt="" /> : null}Seen {last.time}</div>) : null; })()}
           {img && <div className="flex justify-end"><img src={img} className="rounded-[18px] max-w-[75%] object-cover" /></div>}
         </div>
         <div className="flex items-center gap-2.5 px-2 py-2.5 border-t border-black/5 text-[#0084ff]"><span className="font-bold text-lg">›</span>{I.comment}{I.clip}{I.sendUp}<div className="flex-1" /></div>
@@ -129,8 +130,9 @@ function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified }
       <StatusBar notch={false} /><div className="flex items-center gap-2 px-3 py-2 bg-[#1f2c34]/80 backdrop-blur-xl" style={{ background: "rgba(31,44,52,0.75)" }}>{I.back("#aebac1")}<Avatar name={name} img={avatar} /><div className="flex-1 leading-tight"><div className="text-[15px] flex items-center gap-1">{name}{verified && <Verified size={13} />}</div><div className="text-[12px] text-[#8696a0]">online</div></div><div className="flex gap-4 text-[#aebac1]">{I.video("#aebac1")}{I.phone("#aebac1")}</div></div>
       <div className="p-3 space-y-1.5 min-h-[430px]" style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)", backgroundSize: "18px 18px" }}>
         <div className="flex justify-center"><span className="bg-[#182229] text-[11px] px-3 py-1 rounded-full text-[#ffd279] flex items-center gap-1">{I.lock} end-to-end encrypted</span></div>
+        <div className="flex justify-center"><span className="bg-[#182229] text-[11px] px-3 py-1 rounded-full text-zinc-300">{dateLabel || "TODAY"}</span></div>
         {msgs.map((m: Msg, i: number) => (
-          <div key={i} className={`flex ${m.me ? "justify-end" : "justify-start"}`}><div className={`${m.me ? "bg-[#005c4b]" : "bg-[#1f2c34]"} rounded-[22px] px-3 py-2 max-w-[80%] text-[14.5px] relative shadow-sm`}><p className="pr-12">{m.text}</p><span className="absolute bottom-1.5 right-3 text-[11px] text-[#8696a0] flex items-center gap-0.5">{m.time}{m.me && <span className="text-[#53bdeb]">{I.check2}</span>}</span></div></div>
+          <div key={i} className={`flex ${m.me ? "justify-end" : "justify-start"}`}><div className={`${m.me ? "bg-[#005c4b]" : "bg-[#1f2c34]"} rounded-[22px] px-3 py-2 max-w-[80%] text-[14.5px] relative shadow-sm`}><p className="pr-12">{m.text}</p><span className="absolute bottom-1.5 right-3 text-[11px] text-[#8696a0] flex items-center gap-0.5">{m.time}{m.me && (m.seen === "seen" ? <span className="text-[#53bdeb]">{I.check2}</span> : m.seen === "delivered" ? <span className="text-[#8696a0]">{I.check2}</span> : <span className="text-[#8696a0]">✓</span>)}</span></div></div>
         ))}
         {img && <div className="flex justify-end"><img src={img} className="rounded-[22px] max-w-[80%] object-cover" /></div>}
       </div>
@@ -251,11 +253,11 @@ function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified }
           <div className="flex gap-3 opacity-70">{I.phone("#888")}{I.video("#888")}</div>
         </div>
         <div className="p-3 space-y-2 min-h-[430px]">
-          <div className="text-center text-[11px] opacity-50">Today {a.label} • end-to-end encrypted</div>
+          <div className="text-center text-[11px] opacity-50">{dateLabel || `Today ${a.label}`} • end-to-end encrypted</div>
           {msgs.map((m: Msg, i: number) => (
             <div key={i} className={`flex items-end gap-1.5 ${m.me ? "justify-end" : "justify-start"}`}>
               {!m.me && <Avatar name={name} size="w-7 h-7" img={avatar} />}
-              <div style={{ background: m.me ? a.me : a.them, color: m.me ? a.tc : a.tmc }} className="px-3 py-2 rounded-2xl max-w-[75%] text-[14.5px] shadow-sm">{m.text}<span className="text-[10px] opacity-60 ml-1.5">{m.time}</span></div>
+              <div style={{ background: m.me ? a.me : a.them, color: m.me ? a.tc : a.tmc }} className="px-3 py-2 rounded-2xl max-w-[75%] text-[14.5px] shadow-sm">{m.text}<span className="text-[10px] opacity-60 ml-1.5">{m.time}{m.me && m.seen === "seen" ? " • Seen" : m.me && m.seen === "delivered" ? " • Delivered" : ""}</span></div>
             </div>))}
           {img && <div className="flex justify-end"><img src={img} className="rounded-2xl max-w-[70%] object-cover" /></div>}
         </div>
@@ -478,9 +480,11 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
   const [frameless, setFrameless] = useState(false);
   const [msgs, setMsgs] = useState<Msg[]>([
     { me: false, text: "Hey, what are you doing?", time: "09:41" },
-    { me: true, text: "Just figuring out Mockly!", time: "09:42" },
+    { me: true, text: "Just figuring out Mockly!", time: "09:42", seen: "seen" },
   ]);
   const [draft, setDraft] = useState("");
+  const [draftTime, setDraftTime] = useState("09:44");
+  const [dateLabel, setDateLabel] = useState("Today");
   const [asMe, setAsMe] = useState(false);
   const [img, setImg] = useState<string | null>(null);
   const [avatar, setAvatar] = useState<string | null>(null);
@@ -515,7 +519,8 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
     r.readAsDataURL(f);
   };
   if (!gen) return <div className="p-10 text-white">Not found</div>;
-  const add = () => { if (!draft.trim()) return; setMsgs([...msgs, { me: asMe, text: draft, time: "09:44" }]); setDraft(""); };
+  const add = () => { if (!draft.trim()) return; setMsgs([...msgs, { me: asMe, text: draft, time: draftTime || "09:44", seen: asMe ? "sent" : undefined }]); setDraft(""); };
+  const cycleSeen = (i: number) => setMsgs(msgs.map((m, j) => j !== i ? m : { ...m, seen: m.seen === "sent" ? "delivered" : m.seen === "delivered" ? "seen" : "sent" }));
   useEffect(() => {
     if (!adGate) return;
     setAdStep(1);
@@ -618,15 +623,24 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
           <button onClick={() => setAsMe(true)} className={`flex-1 py-2 rounded-lg ${asMe ? "bg-white shadow-sm" : "text-zinc-500"}`}>Me</button>
         </div>
         <div className="flex gap-2">
-          <input value={draft} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => e.key === "Enter" && add()} placeholder="Type a message…" className="flex-1 bg-white border border-black/15 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-black" />
-          <button onClick={add} className="bg-black text-white w-11 rounded-xl font-bold text-lg hover:bg-zinc-800">+</button>
+          <input value={draft} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => e.key === "Enter" && add()} placeholder="Type a message…" className="flex-1 min-w-0 bg-white border border-black/15 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-black" />
+          <input value={draftTime} onChange={(e) => setDraftTime(e.target.value)} placeholder="09:44" className="w-[68px] bg-white border border-black/15 rounded-xl px-2 py-2.5 text-sm outline-none focus:border-black" />
+          <button onClick={add} className="bg-black text-white w-11 shrink-0 rounded-xl font-bold text-lg hover:bg-zinc-800">+</button>
         </div>
+        <label className="block text-[13px] font-semibold">Date label<input value={dateLabel} onChange={(e) => setDateLabel(e.target.value)} placeholder="Today" className="mt-1.5 w-full bg-[#f4f4f5] border border-black/10 rounded-xl px-3.5 py-2 text-[13px] outline-none focus:border-black font-normal" /></label>
         <label className="flex items-center justify-center gap-2 text-[13px] bg-white border-[1.5px] border-dashed border-black/20 rounded-xl p-3 cursor-pointer font-semibold text-zinc-600 hover:border-black hover:text-black">Add image
           <input type="file" accept="image/*" className="hidden" onChange={(e) => onFile(e.target.files?.[0])} />
         </label>
         {img && <div className="relative"><img src={img} className="rounded-xl w-full h-28 object-cover" /><button onClick={() => setImg(null)} className="absolute top-1.5 right-1.5 bg-black text-white text-[11px] font-semibold px-2.5 py-1 rounded-full">Remove</button></div>}
         <div className="space-y-1.5 max-h-52 overflow-auto">
-          {msgs.map((m, i) => (<div key={i} className="group flex items-center gap-2 bg-[#f4f4f5] rounded-xl px-3 py-2 text-[13px]"><span className={`w-1.5 h-1.5 rounded-full shrink-0 ${m.me ? "bg-green-500" : "bg-zinc-400"}`} /><span className="truncate flex-1">{m.text}</span><button onClick={() => setMsgs(msgs.filter((_, j) => j !== i))} className="opacity-0 group-hover:opacity-100 text-zinc-400 hover:text-red-500 text-sm">✕</button></div>))}
+          {msgs.map((m, i) => (
+            <div key={i} className="group flex items-center gap-1.5 bg-[#f4f4f5] rounded-xl px-2.5 py-2 text-[13px]">
+              <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${m.me ? "bg-green-500" : "bg-zinc-400"}`} />
+              <span className="truncate flex-1">{m.text}</span>
+              <input value={m.time} onChange={(e) => setMsgs(msgs.map((x, j) => j === i ? { ...x, time: e.target.value } : x))} className="w-[52px] bg-white border border-black/10 rounded-md px-1 py-0.5 text-[11px] outline-none" />
+              {m.me && <button title="sent→delivered→seen" onClick={() => cycleSeen(i)} className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-white border border-black/10 text-zinc-500 shrink-0">{m.seen === "seen" ? "✓✓ seen" : m.seen === "delivered" ? "✓✓" : "✓"}</button>}
+              <button onClick={() => setMsgs(msgs.filter((_, j) => j !== i))} className="opacity-0 group-hover:opacity-100 text-zinc-400 hover:text-red-500 text-sm shrink-0">✕</button>
+            </div>))}
         </div>
         <div className="flex items-center justify-between text-[13px] font-medium text-zinc-500"><span>Device frame</span><button onClick={() => setFrameless(!frameless)} className={`w-10 h-[22px] rounded-full p-0.5 transition ${frameless ? "bg-zinc-300" : "bg-green-500"}`}><span className={`block w-5 h-5 bg-white rounded-full shadow transition ${frameless ? "" : "ml-auto"}`} /></button></div>
         <div className="space-y-2">
@@ -653,7 +667,7 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
             : gen.kind === "email" ? <EmailView slug={slug} name={name} msgs={msgs} />
             : gen.kind === "notification" ? <NotifView name={name} msgs={msgs} />
             : gen.kind === "tool" ? <ToolView slug={slug} name={name} />
-            : <ChatView slug={slug} name={name} msgs={msgs} self={gen.bubbleSelf} other={gen.bubbleOther} dark={dark} img={img} avatar={avatar} verified={verified} />}
+            : <ChatView slug={slug} name={name} msgs={msgs} self={gen.bubbleSelf} other={gen.bubbleOther} dark={dark} img={img} avatar={avatar} verified={verified} dateLabel={dateLabel} />}
         </div>
         <p className="text-center text-[12px] text-zinc-400 mt-3">HD export • Watch 2 short ads</p>
         {!isPro && <AdSlot slot="preview-bottom" />}
