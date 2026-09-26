@@ -569,6 +569,17 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
         </div>
       </header>
       <ProModal open={proOpen} onClose={() => setProOpen(false)} />
+      {gen.pro && !isPro && (
+        <div className="fixed inset-0 bg-white/80 backdrop-blur-md z-40 flex items-center justify-center p-4">
+          <div className="bg-white border border-black/10 rounded-3xl p-8 w-full max-w-[360px] text-center shadow-2xl">
+            <span className="text-[11px] font-extrabold bg-black text-white px-3 py-1 rounded-full">PRO TOOL</span>
+            <h2 className="text-[20px] font-extrabold mt-3">{gen.title}</h2>
+            <p className="text-[14px] text-zinc-500 mt-1.5">Ei premium generator use korte Fakie Pro lagbe — HD export + no ads shoho.</p>
+            <button onClick={() => setProOpen(true)} className="w-full bg-black text-white font-bold py-3 rounded-xl mt-5">Unlock Pro — $8/mo</button>
+            <a href="/" className="block text-[13px] text-zinc-500 mt-3 underline">Free tools dekho</a>
+          </div>
+        </div>
+      )}
       <div className="max-w-[1200px] mx-auto flex flex-col lg:flex-row gap-4 p-4">
       <div className="w-full lg:w-[340px] p-5 space-y-3.5 bg-white border border-black/10 rounded-2xl h-fit shrink-0 shadow-sm">
         <div className="text-[11px] font-bold uppercase tracking-widest text-zinc-400">fakie. editor</div>

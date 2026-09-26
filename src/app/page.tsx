@@ -19,7 +19,7 @@ function Group({ title, items, icon, id }: { title: string; items: typeof chat; 
       <h2 className="text-[19px] font-bold mb-4 flex items-center gap-2.5"><span className="w-9 h-9 rounded-xl bg-black text-white flex items-center justify-center">{icon}</span>{title}</h2>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
         {items.map((g) => (
-          <Link key={g.slug} href={`/generate/${g.slug}`} className="group border border-black/10 rounded-2xl px-4 py-3.5 text-[14px] font-semibold hover:border-black hover:shadow-md bg-white transition flex items-center justify-between">{g.title}<span className="opacity-0 group-hover:opacity-100 transition text-lg leading-none">→</span></Link>
+          <Link key={g.slug} href={`/generate/${g.slug}`} className="group border border-black/10 rounded-2xl px-4 py-3.5 text-[14px] font-semibold hover:border-black hover:shadow-md bg-white transition flex items-center justify-between">{g.title}<span className="flex items-center gap-1.5">{g.pro && <span className="text-[10px] font-extrabold bg-black text-white px-2 py-0.5 rounded-full">PRO</span>}<span className="opacity-0 group-hover:opacity-100 transition text-lg leading-none">→</span></span></Link>
         ))}
       </div>
     </section>
