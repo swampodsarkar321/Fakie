@@ -635,15 +635,6 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
           </button>
         </div>
         <p className="text-center text-[12px] text-zinc-400">Free forever • HD after 2 short ads</p>
-        <div>
-          <div className="text-[11px] font-bold uppercase tracking-widest text-zinc-400 mb-2">Share image</div>
-          <div className="grid grid-cols-3 gap-2">
-            <button onClick={shareImage} className="flex flex-col items-center gap-1 bg-[#f4f4f5] hover:bg-[#e4e6eb] rounded-xl py-2.5 transition"><span className="w-8 h-8 rounded-full bg-[#25d366] text-white flex items-center justify-center font-bold text-sm">W</span><span className="text-[10px] font-semibold">WhatsApp</span></button>
-            <button onClick={shareImage} className="flex flex-col items-center gap-1 bg-[#f4f4f5] hover:bg-[#e4e6eb] rounded-xl py-2.5 transition"><span className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-500 to-blue-500 text-white flex items-center justify-center font-bold text-sm">M</span><span className="text-[10px] font-semibold">Messenger</span></button>
-            <button onClick={shareImage} className="flex flex-col items-center gap-1 bg-[#f4f4f5] hover:bg-[#e4e6eb] rounded-xl py-2.5 transition"><span className="w-8 h-8 rounded-full bg-[#0084ff] text-white flex items-center justify-center font-bold text-sm">f</span><span className="text-[10px] font-semibold">Facebook</span></button>
-          </div>
-          <p className="text-[11px] text-zinc-400 mt-1.5 text-center">Sends the generated screenshot directly</p>
-        </div>
         <AdSlot slot="editor-sidebar" />
       </div>
       <div className="flex-1 flex items-start justify-center p-6 bg-white border border-black/10 rounded-2xl shadow-sm" style={{ backgroundImage: "radial-gradient(#d4d4d8 1px, transparent 1px)", backgroundSize: "20px 20px" }}>
@@ -657,6 +648,7 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
             : gen.kind === "notification" ? <NotifView name={name} msgs={msgs} />
             : gen.kind === "tool" ? <ToolView slug={slug} name={name} />
             : <ChatView slug={slug} name={name} msgs={msgs} self={gen.bubbleSelf} other={gen.bubbleOther} dark={dark} img={img} avatar={avatar} verified={verified} dateLabel={dateLabel} />}
+          <div className="absolute bottom-1.5 right-1.5 bg-black/55 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md backdrop-blur-sm">fakie.</div>
         </div>
         <p className="text-center text-[12px] text-zinc-400 mt-3">HD export • Watch 2 short ads</p>
         <AdSlot slot="preview-bottom" />
