@@ -521,12 +521,25 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
       push(r(db, `adViews`), { uid: u?.uid ?? "anon", slug, at: Date.now() }).catch(() => {});
     });
   };
+  const [dlBusy, setDlBusy] = useState(false);
   const doDownload = async () => {
-    if (!ref.current) return;
-    const url = await toPng(ref.current, { cacheBust: true, pixelRatio: isPro ? 3 : 1 });
-    const a = document.createElement("a"); a.download = `${gen.slug}${isPro ? "-hd" : ""}.png`; a.href = url; a.click();
-    const u = auth.currentUser;
-    if (u) set(dbRef(db, `users/${u.uid}/designs/${Date.now()}`), { slug, name, msgs, createdAt: Date.now() }).catch(() => {});
+    if (!ref.current || dlBusy) return;
+    setDlBusy(true);
+    try {
+      // uploaded image fully load howa porjonto wait
+      const imgs = Array.from(ref.current.querySelectorAll("img"));
+      await Promise.all(imgs.map((im) => (im.complete ? null : new Promise((res) => { im.onload = res; im.onerror = res; }))));
+      await document.fonts?.ready;
+      const url = await toPng(ref.current, { pixelRatio: isPro ? 3 : 2 });
+      const a = document.createElement("a"); a.download = `${gen.slug}${isPro ? "-hd" : ""}.png`; a.href = url;
+      document.body.appendChild(a); a.click(); a.remove();
+      const u = auth.currentUser;
+      if (u) set(dbRef(db, `users/${u.uid}/designs/${Date.now()}`), { slug, name, msgs, createdAt: Date.now() }).catch(() => {});
+    } catch (e) {
+      alert("Download failed — AdBlock off kore abar try koro.");
+    } finally {
+      setDlBusy(false);
+    }
   };
   const exportPng = async () => {
     if (isPro) return doDownload();
@@ -564,7 +577,7 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
           {msgs.map((m, i) => (<div key={i} className="group flex items-center gap-2 bg-[#f4f4f5] rounded-xl px-3 py-2 text-[13px]"><span className={`w-1.5 h-1.5 rounded-full shrink-0 ${m.me ? "bg-green-500" : "bg-zinc-400"}`} /><span className="truncate flex-1">{m.text}</span><button onClick={() => setMsgs(msgs.filter((_, j) => j !== i))} className="opacity-0 group-hover:opacity-100 text-zinc-400 hover:text-red-500 text-sm">✕</button></div>))}
         </div>
         <div className="flex items-center justify-between text-[13px] font-medium text-zinc-500"><span>Device frame</span><button onClick={() => setFrameless(!frameless)} className={`w-10 h-[22px] rounded-full p-0.5 transition ${frameless ? "bg-zinc-300" : "bg-green-500"}`}><span className={`block w-5 h-5 bg-white rounded-full shadow transition ${frameless ? "" : "ml-auto"}`} /></button></div>
-        <button onClick={exportPng} className="w-full bg-black text-white font-bold py-3 rounded-xl hover:bg-zinc-800">{isPro ? "Export HD PNG ↓" : "Download (Free) ↓"}</button>
+        <button onClick={exportPng} disabled={dlBusy} className="w-full bg-black text-white font-bold py-3 rounded-xl hover:bg-zinc-800 disabled:opacity-60">{dlBusy ? "Saving…" : isPro ? "Export HD PNG ↓" : "Download (Free) ↓"}</button>
         <p className="text-center text-[12px] text-zinc-400">{isPro ? "HD quality • No ads" : "Standard quality • Ad required"} • <button onClick={() => setProOpen(true)} className="underline font-semibold text-black">Go Pro HD</button></p>
         {!isPro && <AdSlot slot="editor-sidebar" />}
       </div>
@@ -594,7 +607,7 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
             ) : count > 0 ? (
               <div className="mt-4"><div className="text-[14px] font-bold text-green-600">✓ Ad opened — verifying… {count}s</div><div className="h-2 bg-zinc-100 rounded-full mt-2 overflow-hidden"><div className="h-full bg-green-500 transition-all" style={{ width: `${(10 - count) * 10}%` }} /></div></div>
             ) : (
-              <button onClick={() => { setAdGate(false); doDownload(); }} className="w-full bg-black text-white font-bold py-3 rounded-xl mt-4">✓ Verified — Download PNG</button>
+              <button onClick={() => { setAdGate(false); doDownload(); }} disabled={dlBusy} className="w-full bg-black text-white font-bold py-3 rounded-xl mt-4 disabled:opacity-60">{dlBusy ? "Saving…" : "✓ Verified — Download PNG"}</button>
             )}
             <button onClick={() => setProOpen(true)} className="w-full text-[13px] font-bold mt-3 text-black underline">Skip ads forever — Go Pro</button>
             <button onClick={() => setAdGate(false)} className="text-[12px] text-zinc-400 mt-1.5">Maybe later</button>
