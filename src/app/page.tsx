@@ -79,7 +79,7 @@ export default function Home() {
       <footer className="border-t border-black/10 mt-8">
         <div className="max-w-6xl mx-auto px-6 py-10 grid md:grid-cols-3 gap-8 text-[14px]">
           <div><b>Resources</b><div className="mt-2 space-y-1 text-zinc-600"><div>Chat Screenshot Generator</div><div>Fake Chat Generator</div><div>Fake DM Generator</div><div>Blog</div><div>FAQ</div></div></div>
-          <div><b>Legal</b><div className="mt-2 space-y-1 text-zinc-600"><div>Terms of Service</div><div>Privacy Policy</div><div>Cookie settings</div></div></div>
+          <div><b>Legal</b><div className="mt-2 space-y-1 text-zinc-600"><Link href="/terms" className="block hover:text-black">Terms of Service</Link><Link href="/privacy" className="block hover:text-black">Privacy Policy</Link><div>Cookie settings</div></div></div>
           <div><b className="text-[20px]">fakie.</b><div className="mt-2 text-zinc-500">© 2026 Fakie. All rights reserved.</div></div>
         </div>
       </footer>

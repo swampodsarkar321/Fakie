@@ -10,8 +10,13 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Fakie — Fake Chat & Screenshot Generator",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://fakie.app"),
+  title: { default: "Fakie — Fake Chat & Screenshot Generator", template: "%s — Fakie" },
   description: "Make realistic fake chats, posts, comments, stories, emails and notification screenshots. Free, no signup.",
+  keywords: ["fake chat generator", "fake whatsapp chat", "fake instagram post", "chat screenshot generator", "fake dm generator"],
+  openGraph: { type: "website", siteName: "Fakie", title: "Fakie — Fake Chat & Screenshot Generator", description: "Make realistic fake screenshots for any app. Free, no signup." },
+  twitter: { card: "summary_large_image", title: "Fakie — Fake Chat & Screenshot Generator", description: "Make realistic fake screenshots for any app. Free, no signup." },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
