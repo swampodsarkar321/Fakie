@@ -494,6 +494,7 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
   const [proOpen, setProOpen] = useState(false);
   const [adGate, setAdGate] = useState(false);
   const [adStep, setAdStep] = useState(1);
+  const [gateMode, setGateMode] = useState<"sd" | "hd">("hd");
   const [adClicked, setAdClicked] = useState(false);
   const [count, setCount] = useState(10);
   const [tabWarn, setTabWarn] = useState(false);
@@ -521,7 +522,7 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
     setAdClicked(false);
     setCount(10);
     setTabWarn(false);
-  }, [adGate]);
+  }, [adGate, gateMode]);
   useEffect(() => {
     if (!adGate || !adClicked || count <= 0) return;
     if (document.hidden) { setTabWarn(true); return; }
@@ -544,9 +545,10 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
     });
   };
   const nextAd = () => {
-    if (adStep === 1) { setAdStep(2); setAdClicked(false); setCount(10); setTabWarn(false); }
+    if (gateMode === "hd" && adStep === 1) { setAdStep(2); setAdClicked(false); setCount(10); setTabWarn(false); }
     else { setAdGate(false); doDownloadHD(); }
   };
+  const need = gateMode === "hd" ? 2 : 1;
   const doDownloadHD = async () => {
     if (!ref.current || dlBusy) return;
     setDlBusy(true);
@@ -554,8 +556,8 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
       const imgs = Array.from(ref.current.querySelectorAll("img"));
       await Promise.all(imgs.map((im) => (im.complete ? null : new Promise((res) => { im.onload = res; im.onerror = res; }))));
       await document.fonts?.ready;
-      const url = await toPng(ref.current, { pixelRatio: 3 });
-      const a = document.createElement("a"); a.download = `${gen.slug}-hd.png`; a.href = url;
+      const url = await toPng(ref.current, { pixelRatio: gateMode === "hd" ? 3 : 1 });
+      const a = document.createElement("a"); a.download = `${gen.slug}-${gateMode}.png`; a.href = url;
       document.body.appendChild(a); a.click(); a.remove();
     } catch (e) {
       alert("Download failed — please turn off AdBlock and try again.");
@@ -584,7 +586,12 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
     }
   };
   const exportPng = async () => {
-    setAdGate(true); // HD download needs 2 ads
+    setGateMode("hd");
+    setAdGate(true);
+  };
+  const exportSD = async () => {
+    setGateMode("sd");
+    setAdGate(true);
   };
   return (
     <div className="min-h-screen bg-[#f4f4f5] text-black">
@@ -622,8 +629,11 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
           {msgs.map((m, i) => (<div key={i} className="group flex items-center gap-2 bg-[#f4f4f5] rounded-xl px-3 py-2 text-[13px]"><span className={`w-1.5 h-1.5 rounded-full shrink-0 ${m.me ? "bg-green-500" : "bg-zinc-400"}`} /><span className="truncate flex-1">{m.text}</span><button onClick={() => setMsgs(msgs.filter((_, j) => j !== i))} className="opacity-0 group-hover:opacity-100 text-zinc-400 hover:text-red-500 text-sm">✕</button></div>))}
         </div>
         <div className="flex items-center justify-between text-[13px] font-medium text-zinc-500"><span>Device frame</span><button onClick={() => setFrameless(!frameless)} className={`w-10 h-[22px] rounded-full p-0.5 transition ${frameless ? "bg-zinc-300" : "bg-green-500"}`}><span className={`block w-5 h-5 bg-white rounded-full shadow transition ${frameless ? "" : "ml-auto"}`} /></button></div>
-        <button onClick={exportPng} disabled={dlBusy} className="w-full bg-black text-white font-bold py-3 rounded-xl hover:bg-zinc-800 disabled:opacity-60">{dlBusy ? "Saving…" : "Download HD ↓"}</button>
-        <p className="text-center text-[12px] text-zinc-400">HD quality • Watch 2 short ads</p>
+        <div className="grid grid-cols-2 gap-2">
+          <button onClick={exportSD} disabled={dlBusy} className="bg-white border-2 border-black font-bold py-3 rounded-xl hover:bg-zinc-50 disabled:opacity-60 text-[14px]">Standard ↓<span className="block text-[11px] font-medium text-zinc-500">1 ad</span></button>
+          <button onClick={exportPng} disabled={dlBusy} className="bg-black text-white font-bold py-3 rounded-xl hover:bg-zinc-800 disabled:opacity-60 text-[14px]">{dlBusy ? "Saving…" : "HD ↓"}<span className="block text-[11px] font-medium opacity-60">2 ads</span></button>
+        </div>
+        <p className="text-center text-[12px] text-zinc-400">Standard = 1 ad • HD = 2 ads</p>
         {!isPro && <AdSlot slot="editor-sidebar" />}
       </div>
       <div className="flex-1 flex items-start justify-center p-6 bg-white border border-black/10 rounded-2xl shadow-sm" style={{ backgroundImage: "radial-gradient(#d4d4d8 1px, transparent 1px)", backgroundSize: "20px 20px" }}>
@@ -645,16 +655,16 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
       {adGate && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-3xl p-6 w-full max-w-[340px] text-center">
-            <b className="text-[17px]">Watch 2 ads for HD download</b>
-            <p className="text-[13px] text-zinc-500 mt-1">Ad {adStep} of 2 • Stay on this tab until verified</p>
-            <div className="flex gap-1.5 mt-3">{[1, 2].map((s) => (<div key={s} className={`h-1.5 flex-1 rounded-full ${s < adStep || (s === adStep && adClicked && count <= 0) ? "bg-green-500" : s === adStep ? "bg-black" : "bg-zinc-200"}`} />))}</div>
+            <b className="text-[17px]">{gateMode === "hd" ? "Watch 2 ads for HD download" : "Watch 1 ad for Standard download"}</b>
+            <p className="text-[13px] text-zinc-500 mt-1">Ad {adStep} of {need} • Stay on this tab until verified</p>
+            <div className="flex gap-1.5 mt-3">{Array.from({ length: need }, (_, k) => k + 1).map((s) => (<div key={s} className={`h-1.5 flex-1 rounded-full ${s < adStep || (s === adStep && adClicked && count <= 0) ? "bg-green-500" : s === adStep ? "bg-black" : "bg-zinc-200"}`} />))}</div>
             {tabWarn && <div className="text-[13px] font-bold text-red-600 mt-3">You left the tab — timer paused. Stay here to verify.</div>}
             {!adClicked ? (
               <button onClick={openAd} className="w-full bg-[#0b57d0] text-white font-bold py-3 rounded-xl mt-4">Open Sponsor Ad {adStep}/2 ↗</button>
             ) : count > 0 ? (
               <div className="mt-4"><div className="text-[14px] font-bold text-green-600">✓ Ad opened — verifying… {count}s</div><div className="h-2 bg-zinc-100 rounded-full mt-2 overflow-hidden"><div className="h-full bg-green-500 transition-all" style={{ width: `${(10 - count) * 10}%` }} /></div></div>
             ) : (
-              <button onClick={nextAd} disabled={dlBusy} className="w-full bg-black text-white font-bold py-3 rounded-xl mt-4 disabled:opacity-60">{adStep === 1 ? "✓ Ad 1 verified — Continue to Ad 2" : dlBusy ? "Saving…" : "✓ Verified — Download HD PNG"}</button>
+              <button onClick={nextAd} disabled={dlBusy} className="w-full bg-black text-white font-bold py-3 rounded-xl mt-4 disabled:opacity-60">{gateMode === "hd" && adStep === 1 ? "✓ Ad 1 verified — Continue to Ad 2" : dlBusy ? "Saving…" : `✓ Verified — Download ${gateMode === "hd" ? "HD" : "Standard"} PNG`}</button>
             )}
             <button onClick={() => setAdGate(false)} className="text-[12px] text-zinc-400 mt-2.5">Maybe later</button>
           </div>
