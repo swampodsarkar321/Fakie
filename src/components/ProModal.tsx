@@ -19,7 +19,11 @@ export default function ProModal({ open, onClose }: { open: boolean; onClose: ()
     if (!trx.trim()) { setErr("Please enter your Transaction ID."); return; }
     setBusy(true);
     try {
-      await push(dbRef(db, "payments"), { uid: u.uid, name: u.displayName, email: u.email, plan, price, method, trx: trx.trim(), status: "pending", at: Date.now() });
+      const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error("No connection to database (15s timeout).")), 15000));
+      await Promise.race([
+        push(dbRef(db, "payments"), { uid: u.uid, name: u.displayName, email: u.email, plan, price, method, trx: trx.trim(), status: "pending", at: Date.now() }),
+        timeout,
+      ]);
       setSent(true);
     } catch (e: any) {
       setErr("Submit failed: " + (e?.message || "database blocked") + " — Firebase Rules check koro.");
