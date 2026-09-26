@@ -9,10 +9,10 @@ export default function ProModal({ open, onClose }: { open: boolean; onClose: ()
   const price = plan === "monthly" ? 8 : 60;
   const buy = async () => {
     const u = auth.currentUser;
-    if (!u) return alert("Age Login with Google koro");
+    if (!u) return alert("Please login with Google first");
     // Stripe/Paddle checkout link ekhane bosbe
     await set(dbRef(db, `users/${u.uid}/pro`), { plan, price, status: "pending", createdAt: Date.now() }).catch(() => {});
-    alert(`Checkout: $${price} ${plan} — Stripe link connect korle payment hobe.`);
+    alert(`Checkout: $${price} ${plan} — payment link coming soon.`);
     onClose();
   };
   return (

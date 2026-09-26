@@ -548,7 +548,7 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
       const u = auth.currentUser;
       if (u) set(dbRef(db, `users/${u.uid}/designs/${Date.now()}`), { slug, name, msgs, createdAt: Date.now() }).catch(() => {});
     } catch (e) {
-      alert("Download failed — AdBlock off kore abar try koro.");
+      alert("Download failed — please turn off AdBlock and try again.");
     } finally {
       setDlBusy(false);
     }
@@ -574,9 +574,9 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
           <div className="bg-white border border-black/10 rounded-3xl p-8 w-full max-w-[360px] text-center shadow-2xl">
             <span className="text-[11px] font-extrabold bg-black text-white px-3 py-1 rounded-full">PRO TOOL</span>
             <h2 className="text-[20px] font-extrabold mt-3">{gen.title}</h2>
-            <p className="text-[14px] text-zinc-500 mt-1.5">Ei premium generator use korte Fakie Pro lagbe — HD export + no ads shoho.</p>
+            <p className="text-[14px] text-zinc-500 mt-1.5">This premium generator requires Fakie Pro — includes HD export and no ads.</p>
             <button onClick={() => setProOpen(true)} className="w-full bg-black text-white font-bold py-3 rounded-xl mt-5">Unlock Pro — $8/mo</button>
-            <a href="/" className="block text-[13px] text-zinc-500 mt-3 underline">Free tools dekho</a>
+            <a href="/" className="block text-[13px] text-zinc-500 mt-3 underline">Browse free tools</a>
           </div>
         </div>
       )}
