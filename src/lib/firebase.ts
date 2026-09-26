@@ -11,7 +11,7 @@ const firebaseConfig = {
   messagingSenderId: "558793172468",
   appId: "1:558793172468:web:76bc91e0283bdf60a285a1",
   measurementId: "G-1MHXS45WLE",
-  databaseURL: "https://fakie-37d13-default-rtdb.firebaseio.com",
+  databaseURL: "https://fakie-37d13-default-rtdb.asia-southeast1.firebasedatabase.app",
 };
 
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
