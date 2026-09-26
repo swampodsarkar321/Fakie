@@ -1,13 +1,8 @@
 "use client";
 import { use, useEffect, useRef, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
 import { toPng } from "html-to-image";
 import { getGenerator } from "@/lib/generators";
-import AuthButton, { saveUser } from "@/components/AuthButton";
 import AdSlot from "@/components/AdSlot";
-import ProModal from "@/components/ProModal";
-import { auth, db } from "@/lib/firebase";
-import { ref as dbRef, set } from "firebase/database";
 
 type Msg = { me: boolean; text: string; time: string; seen?: "sent" | "delivered" | "seen" };
 
@@ -495,23 +490,12 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
     r.onload = () => setAvatar(r.result as string);
     r.readAsDataURL(f);
   };
-  const [proOpen, setProOpen] = useState(false);
   const [adGate, setAdGate] = useState(false);
   const [adStep, setAdStep] = useState(1);
   const [gateMode, setGateMode] = useState<"sd" | "hd">("hd");
   const [adClicked, setAdClicked] = useState(false);
   const [count, setCount] = useState(10);
   const [tabWarn, setTabWarn] = useState(false);
-  const [isPro, setIsPro] = useState(false);
-  useEffect(() => {
-    const un = onAuthStateChanged(auth, (u) => {
-      if (!u) return setIsPro(false);
-      import("firebase/database").then(({ ref: r, get }) =>
-        get(r(db, `users/${u.uid}/pro/status`)).then((s) => setIsPro(s.val() === "active")).catch(() => {})
-      );
-    });
-    return () => un();
-  }, []);
   const onFile = (f: File | undefined) => {
     if (!f) return;
     const r = new FileReader();
@@ -544,10 +528,6 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
     window.open(SMARTLINK, "_blank", "noopener");
     setAdClicked(true);
     setTabWarn(false);
-    import("firebase/database").then(({ ref: r, push }) => {
-      const u = auth.currentUser;
-      push(r(db, `adViews`), { uid: u?.uid ?? "anon", slug, step: adStep, at: Date.now() }).catch(() => {});
-    });
   };
   const nextAd = () => {
     if (gateMode === "hd" && adStep === 1) { setAdStep(2); setAdClicked(false); setCount(10); setTabWarn(false); }
@@ -571,25 +551,6 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
     }
   };
   const [dlBusy, setDlBusy] = useState(false);
-  const doDownload = async () => {
-    if (!ref.current || dlBusy) return;
-    setDlBusy(true);
-    try {
-      // uploaded image fully load howa porjonto wait
-      const imgs = Array.from(ref.current.querySelectorAll("img"));
-      await Promise.all(imgs.map((im) => (im.complete ? null : new Promise((res) => { im.onload = res; im.onerror = res; }))));
-      await document.fonts?.ready;
-      const url = await toPng(ref.current, { pixelRatio: isPro ? 3 : 2 });
-      const a = document.createElement("a"); a.download = `${gen.slug}${isPro ? "-hd" : ""}.png`; a.href = url;
-      document.body.appendChild(a); a.click(); a.remove();
-      const u = auth.currentUser;
-      if (u) set(dbRef(db, `users/${u.uid}/designs/${Date.now()}`), { slug, name, msgs, createdAt: Date.now() }).catch(() => {});
-    } catch (e) {
-      alert("Download failed — please turn off AdBlock and try again.");
-    } finally {
-      setDlBusy(false);
-    }
-  };
   const exportPng = async () => {
     setGateMode("hd");
     setAdGate(true);
@@ -605,10 +566,9 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
           <a href="/" className="flex items-center gap-2 text-[14px] font-semibold text-zinc-600 hover:text-black"><span className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center">←</span> Back</a>
           <span className="text-zinc-300">|</span>
           <b className="text-[15px] tracking-tight truncate">{gen.title}</b>
-          <span className="ml-auto flex items-center gap-2"><AuthButton /></span>
+          <span className="ml-auto" />
         </div>
       </header>
-      <ProModal open={proOpen} onClose={() => setProOpen(false)} />
       <div className="max-w-[1200px] mx-auto flex flex-col lg:flex-row gap-4 p-4">
       <div className="w-full lg:w-[340px] p-5 space-y-3.5 bg-white border border-black/10 rounded-2xl h-fit shrink-0 shadow-sm">
         <div className="text-[11px] font-bold uppercase tracking-widest text-zinc-400">fakie. editor</div>
@@ -655,7 +615,7 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
           </button>
         </div>
         <p className="text-center text-[12px] text-zinc-400">Free forever • HD after 2 short ads</p>
-        {!isPro && <AdSlot slot="editor-sidebar" />}
+        <AdSlot slot="editor-sidebar" />
       </div>
       <div className="flex-1 flex items-start justify-center p-6 bg-white border border-black/10 rounded-2xl shadow-sm" style={{ backgroundImage: "radial-gradient(#d4d4d8 1px, transparent 1px)", backgroundSize: "20px 20px" }}>
         <div>
@@ -670,7 +630,7 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
             : <ChatView slug={slug} name={name} msgs={msgs} self={gen.bubbleSelf} other={gen.bubbleOther} dark={dark} img={img} avatar={avatar} verified={verified} dateLabel={dateLabel} />}
         </div>
         <p className="text-center text-[12px] text-zinc-400 mt-3">HD export • Watch 2 short ads</p>
-        {!isPro && <AdSlot slot="preview-bottom" />}
+        <AdSlot slot="preview-bottom" />
         </div>
       </div>
       {adGate && (

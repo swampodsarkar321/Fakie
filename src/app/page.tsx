@@ -1,5 +1,4 @@
 import Link from "next/link";
-import AuthButton from "@/components/AuthButton";
 import { GENERATORS } from "@/lib/generators";
 
 const chat = GENERATORS.filter((g) => g.kind === "chat");
@@ -36,7 +35,6 @@ export default function Home() {
             <a href="#chat" className="hover:text-black">Fake WhatsApp chat</a><a href="#post" className="hover:text-black">Fake Posts</a><a href="#comments" className="hover:text-black">Fake Comments & Stories</a><a href="#email" className="hover:text-black">Fake Email & Notifications</a><a href="#tools" className="hover:text-black">Free tools</a>
           </nav>
           <Link href="/generate/fake-whatsapp-messages" className="ml-auto bg-black text-white text-[14px] font-semibold px-4 py-2 rounded-full">Start editing</Link>
-          <AuthButton />
         </div>
       </header>
 
