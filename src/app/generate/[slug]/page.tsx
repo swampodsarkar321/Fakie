@@ -493,8 +493,10 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
   };
   const [proOpen, setProOpen] = useState(false);
   const [adGate, setAdGate] = useState(false);
+  const [adStep, setAdStep] = useState(1);
   const [adClicked, setAdClicked] = useState(false);
   const [count, setCount] = useState(10);
+  const [tabWarn, setTabWarn] = useState(false);
   const [isPro, setIsPro] = useState(false);
   useEffect(() => {
     const un = onAuthStateChanged(auth, (u) => {
@@ -515,23 +517,51 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
   const add = () => { if (!draft.trim()) return; setMsgs([...msgs, { me: asMe, text: draft, time: "09:44" }]); setDraft(""); };
   useEffect(() => {
     if (!adGate) return;
+    setAdStep(1);
     setAdClicked(false);
     setCount(10);
+    setTabWarn(false);
   }, [adGate]);
   useEffect(() => {
     if (!adGate || !adClicked || count <= 0) return;
+    if (document.hidden) { setTabWarn(true); return; }
     const t = setTimeout(() => setCount((c) => c - 1), 1000);
     return () => clearTimeout(t);
   }, [adGate, adClicked, count]);
+  useEffect(() => {
+    const onVis = () => { if (adGate && adClicked && document.hidden) setTabWarn(true); };
+    document.addEventListener("visibilitychange", onVis);
+    return () => document.removeEventListener("visibilitychange", onVis);
+  }, [adGate, adClicked]);
   const SMARTLINK = "https://www.profitableratecpmnetwork.com/kx4e786uky?key=c4ecf6dfa0afd701bd35e01f02d0e4e9";
   const openAd = () => {
     window.open(SMARTLINK, "_blank", "noopener");
     setAdClicked(true);
-    // verify log → Firebase
+    setTabWarn(false);
     import("firebase/database").then(({ ref: r, push }) => {
       const u = auth.currentUser;
-      push(r(db, `adViews`), { uid: u?.uid ?? "anon", slug, at: Date.now() }).catch(() => {});
+      push(r(db, `adViews`), { uid: u?.uid ?? "anon", slug, step: adStep, at: Date.now() }).catch(() => {});
     });
+  };
+  const nextAd = () => {
+    if (adStep === 1) { setAdStep(2); setAdClicked(false); setCount(10); setTabWarn(false); }
+    else { setAdGate(false); doDownloadHD(); }
+  };
+  const doDownloadHD = async () => {
+    if (!ref.current || dlBusy) return;
+    setDlBusy(true);
+    try {
+      const imgs = Array.from(ref.current.querySelectorAll("img"));
+      await Promise.all(imgs.map((im) => (im.complete ? null : new Promise((res) => { im.onload = res; im.onerror = res; }))));
+      await document.fonts?.ready;
+      const url = await toPng(ref.current, { pixelRatio: 3 });
+      const a = document.createElement("a"); a.download = `${gen.slug}-hd.png`; a.href = url;
+      document.body.appendChild(a); a.click(); a.remove();
+    } catch (e) {
+      alert("Download failed — please turn off AdBlock and try again.");
+    } finally {
+      setDlBusy(false);
+    }
   };
   const [dlBusy, setDlBusy] = useState(false);
   const doDownload = async () => {
@@ -554,8 +584,7 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
     }
   };
   const exportPng = async () => {
-    if (isPro) return doDownload();
-    setAdGate(true); // free user: protibar ad dekhe download
+    setAdGate(true); // HD download needs 2 ads
   };
   return (
     <div className="min-h-screen bg-[#f4f4f5] text-black">
@@ -565,21 +594,9 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
           <span className="text-zinc-300">|</span>
           <b className="text-[15px] tracking-tight truncate">{gen.title}</b>
           <span className="ml-auto flex items-center gap-2"><AuthButton /></span>
-          <button onClick={() => setProOpen(true)} className="bg-black text-white text-[13px] font-bold px-4 py-2 rounded-full hover:bg-zinc-800">Go Pro ✦</button>
         </div>
       </header>
       <ProModal open={proOpen} onClose={() => setProOpen(false)} />
-      {gen.pro && !isPro && (
-        <div className="fixed inset-0 bg-white/80 backdrop-blur-md z-40 flex items-center justify-center p-4">
-          <div className="bg-white border border-black/10 rounded-3xl p-8 w-full max-w-[360px] text-center shadow-2xl">
-            <span className="text-[11px] font-extrabold bg-black text-white px-3 py-1 rounded-full">PRO TOOL</span>
-            <h2 className="text-[20px] font-extrabold mt-3">{gen.title}</h2>
-            <p className="text-[14px] text-zinc-500 mt-1.5">This premium generator requires Fakie Pro — includes HD export and no ads.</p>
-            <button onClick={() => setProOpen(true)} className="w-full bg-black text-white font-bold py-3 rounded-xl mt-5">Unlock Pro — $8/mo</button>
-            <a href="/" className="block text-[13px] text-zinc-500 mt-3 underline">Browse free tools</a>
-          </div>
-        </div>
-      )}
       <div className="max-w-[1200px] mx-auto flex flex-col lg:flex-row gap-4 p-4">
       <div className="w-full lg:w-[340px] p-5 space-y-3.5 bg-white border border-black/10 rounded-2xl h-fit shrink-0 shadow-sm">
         <div className="text-[11px] font-bold uppercase tracking-widest text-zinc-400">fakie. editor</div>
@@ -605,8 +622,8 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
           {msgs.map((m, i) => (<div key={i} className="group flex items-center gap-2 bg-[#f4f4f5] rounded-xl px-3 py-2 text-[13px]"><span className={`w-1.5 h-1.5 rounded-full shrink-0 ${m.me ? "bg-green-500" : "bg-zinc-400"}`} /><span className="truncate flex-1">{m.text}</span><button onClick={() => setMsgs(msgs.filter((_, j) => j !== i))} className="opacity-0 group-hover:opacity-100 text-zinc-400 hover:text-red-500 text-sm">✕</button></div>))}
         </div>
         <div className="flex items-center justify-between text-[13px] font-medium text-zinc-500"><span>Device frame</span><button onClick={() => setFrameless(!frameless)} className={`w-10 h-[22px] rounded-full p-0.5 transition ${frameless ? "bg-zinc-300" : "bg-green-500"}`}><span className={`block w-5 h-5 bg-white rounded-full shadow transition ${frameless ? "" : "ml-auto"}`} /></button></div>
-        <button onClick={exportPng} disabled={dlBusy} className="w-full bg-black text-white font-bold py-3 rounded-xl hover:bg-zinc-800 disabled:opacity-60">{dlBusy ? "Saving…" : isPro ? "Export HD PNG ↓" : "Download (Free) ↓"}</button>
-        <p className="text-center text-[12px] text-zinc-400">{isPro ? "HD quality • No ads" : "Standard quality • Ad required"} • <button onClick={() => setProOpen(true)} className="underline font-semibold text-black">Go Pro HD</button></p>
+        <button onClick={exportPng} disabled={dlBusy} className="w-full bg-black text-white font-bold py-3 rounded-xl hover:bg-zinc-800 disabled:opacity-60">{dlBusy ? "Saving…" : "Download HD ↓"}</button>
+        <p className="text-center text-[12px] text-zinc-400">HD quality • Watch 2 short ads</p>
         {!isPro && <AdSlot slot="editor-sidebar" />}
       </div>
       <div className="flex-1 flex items-start justify-center p-6 bg-white border border-black/10 rounded-2xl shadow-sm" style={{ backgroundImage: "radial-gradient(#d4d4d8 1px, transparent 1px)", backgroundSize: "20px 20px" }}>
@@ -621,24 +638,25 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
             : gen.kind === "tool" ? <ToolView slug={slug} name={name} />
             : <ChatView slug={slug} name={name} msgs={msgs} self={gen.bubbleSelf} other={gen.bubbleOther} dark={dark} img={img} avatar={avatar} verified={verified} />}
         </div>
-        <p className="text-center text-[12px] text-zinc-400 mt-3">{isPro ? "HD export • No ads" : "Free export (standard quality)"} • <button onClick={() => setProOpen(true)} className="underline font-semibold text-black">Go Pro — HD $8/mo</button></p>
+        <p className="text-center text-[12px] text-zinc-400 mt-3">HD export • Watch 2 short ads</p>
         {!isPro && <AdSlot slot="preview-bottom" />}
         </div>
       </div>
       {adGate && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-3xl p-6 w-full max-w-[340px] text-center">
-            <b className="text-[17px]">Watch ad to download</b>
-            <p className="text-[13px] text-zinc-500 mt-1">Step 1: open the sponsor ad • Step 2: wait 10s • Step 3: download</p>
+            <b className="text-[17px]">Watch 2 ads for HD download</b>
+            <p className="text-[13px] text-zinc-500 mt-1">Ad {adStep} of 2 • Stay on this tab until verified</p>
+            <div className="flex gap-1.5 mt-3">{[1, 2].map((s) => (<div key={s} className={`h-1.5 flex-1 rounded-full ${s < adStep || (s === adStep && adClicked && count <= 0) ? "bg-green-500" : s === adStep ? "bg-black" : "bg-zinc-200"}`} />))}</div>
+            {tabWarn && <div className="text-[13px] font-bold text-red-600 mt-3">You left the tab — timer paused. Stay here to verify.</div>}
             {!adClicked ? (
-              <button onClick={openAd} className="w-full bg-[#0b57d0] text-white font-bold py-3 rounded-xl mt-4">Open Sponsor Ad ↗</button>
+              <button onClick={openAd} className="w-full bg-[#0b57d0] text-white font-bold py-3 rounded-xl mt-4">Open Sponsor Ad {adStep}/2 ↗</button>
             ) : count > 0 ? (
               <div className="mt-4"><div className="text-[14px] font-bold text-green-600">✓ Ad opened — verifying… {count}s</div><div className="h-2 bg-zinc-100 rounded-full mt-2 overflow-hidden"><div className="h-full bg-green-500 transition-all" style={{ width: `${(10 - count) * 10}%` }} /></div></div>
             ) : (
-              <button onClick={() => { setAdGate(false); doDownload(); }} disabled={dlBusy} className="w-full bg-black text-white font-bold py-3 rounded-xl mt-4 disabled:opacity-60">{dlBusy ? "Saving…" : "✓ Verified — Download PNG"}</button>
+              <button onClick={nextAd} disabled={dlBusy} className="w-full bg-black text-white font-bold py-3 rounded-xl mt-4 disabled:opacity-60">{adStep === 1 ? "✓ Ad 1 verified — Continue to Ad 2" : dlBusy ? "Saving…" : "✓ Verified — Download HD PNG"}</button>
             )}
-            <button onClick={() => setProOpen(true)} className="w-full text-[13px] font-bold mt-3 text-black underline">Skip ads forever — Go Pro</button>
-            <button onClick={() => setAdGate(false)} className="text-[12px] text-zinc-400 mt-1.5">Maybe later</button>
+            <button onClick={() => setAdGate(false)} className="text-[12px] text-zinc-400 mt-2.5">Maybe later</button>
           </div>
         </div>
       )}
