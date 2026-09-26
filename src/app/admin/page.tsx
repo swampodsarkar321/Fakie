@@ -11,7 +11,10 @@ interface Pay { id: string; uid: string; name: string; email: string; plan: stri
 export default function AdminPage() {
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
-  const [ok, setOk] = useState(() => typeof window !== "undefined" && sessionStorage.getItem("fakie_admin") === "1");
+  const [ok, setOk] = useState(false);
+  useEffect(() => {
+    if (sessionStorage.getItem("fakie_admin") === "1") setOk(true);
+  }, []);
   const [err, setErr] = useState("");
   const [tab, setTab] = useState<"payments" | "users" | "ads">("payments");
   const [pays, setPays] = useState<Pay[]>([]);
