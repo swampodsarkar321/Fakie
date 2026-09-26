@@ -551,6 +551,26 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
     }
   };
   const [dlBusy, setDlBusy] = useState(false);
+  const shareImage = async () => {
+    if (!ref.current) return;
+    try {
+      const imgs = Array.from(ref.current.querySelectorAll("img"));
+      await Promise.all(imgs.map((im) => (im.complete ? null : new Promise((res) => { im.onload = res; im.onerror = res; }))));
+      const blob = await (await import("html-to-image")).toBlob(ref.current, { pixelRatio: 2 });
+      if (!blob) throw new Error("empty");
+      const file = new File([blob], `${gen.slug}.png`, { type: "image/png" });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: "Fakie mockup" });
+      } else {
+        alert("Direct share works on mobile — the image will download instead.");
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a"); a.download = `${gen.slug}.png`; a.href = url;
+        document.body.appendChild(a); a.click(); a.remove();
+      }
+    } catch (e: any) {
+      if (e?.name !== "AbortError") alert("Share failed — try downloading instead.");
+    }
+  };
   const exportPng = async () => {
     setGateMode("hd");
     setAdGate(true);
@@ -616,13 +636,13 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
         </div>
         <p className="text-center text-[12px] text-zinc-400">Free forever • HD after 2 short ads</p>
         <div>
-          <div className="text-[11px] font-bold uppercase tracking-widest text-zinc-400 mb-2">Share this tool</div>
-          <div className="grid grid-cols-4 gap-2">
-            <button onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent("Make fake screenshots with Fakie! " + window.location.href)}`, "_blank")} className="flex flex-col items-center gap-1 bg-[#f4f4f5] hover:bg-[#e4e6eb] rounded-xl py-2.5 transition"><span className="w-8 h-8 rounded-full bg-[#25d366] text-white flex items-center justify-center font-bold text-sm">W</span><span className="text-[10px] font-semibold">WhatsApp</span></button>
-            <button onClick={() => window.open(`https://www.facebook.com/dialog/send?link=${encodeURIComponent(typeof window !== "undefined" ? window.location.href : "")}&app_id=0&redirect_uri=${encodeURIComponent(typeof window !== "undefined" ? window.location.href : "")}`, "_blank")} className="flex flex-col items-center gap-1 bg-[#f4f4f5] hover:bg-[#e4e6eb] rounded-xl py-2.5 transition"><span className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-500 to-blue-500 text-white flex items-center justify-center font-bold text-sm">M</span><span className="text-[10px] font-semibold">Messenger</span></button>
-            <button onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(typeof window !== "undefined" ? window.location.href : "")}`, "_blank")} className="flex flex-col items-center gap-1 bg-[#f4f4f5] hover:bg-[#e4e6eb] rounded-xl py-2.5 transition"><span className="w-8 h-8 rounded-full bg-[#0084ff] text-white flex items-center justify-center font-bold text-sm">f</span><span className="text-[10px] font-semibold">Facebook</span></button>
-            <button onClick={() => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent("Make fake screenshots with Fakie!")}&url=${encodeURIComponent(typeof window !== "undefined" ? window.location.href : "")}`, "_blank")} className="flex flex-col items-center gap-1 bg-[#f4f4f5] hover:bg-[#e4e6eb] rounded-xl py-2.5 transition"><span className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center font-bold text-sm">𝕏</span><span className="text-[10px] font-semibold">X Post</span></button>
+          <div className="text-[11px] font-bold uppercase tracking-widest text-zinc-400 mb-2">Share image</div>
+          <div className="grid grid-cols-3 gap-2">
+            <button onClick={shareImage} className="flex flex-col items-center gap-1 bg-[#f4f4f5] hover:bg-[#e4e6eb] rounded-xl py-2.5 transition"><span className="w-8 h-8 rounded-full bg-[#25d366] text-white flex items-center justify-center font-bold text-sm">W</span><span className="text-[10px] font-semibold">WhatsApp</span></button>
+            <button onClick={shareImage} className="flex flex-col items-center gap-1 bg-[#f4f4f5] hover:bg-[#e4e6eb] rounded-xl py-2.5 transition"><span className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-500 to-blue-500 text-white flex items-center justify-center font-bold text-sm">M</span><span className="text-[10px] font-semibold">Messenger</span></button>
+            <button onClick={shareImage} className="flex flex-col items-center gap-1 bg-[#f4f4f5] hover:bg-[#e4e6eb] rounded-xl py-2.5 transition"><span className="w-8 h-8 rounded-full bg-[#0084ff] text-white flex items-center justify-center font-bold text-sm">f</span><span className="text-[10px] font-semibold">Facebook</span></button>
           </div>
+          <p className="text-[11px] text-zinc-400 mt-1.5 text-center">Sends the generated screenshot directly</p>
         </div>
         <AdSlot slot="editor-sidebar" />
       </div>
