@@ -47,12 +47,16 @@ function StatusBar({ dark = true, notch = true }: { dark?: boolean; notch?: bool
     </div>
   );
 }
-const Avatar = ({ name, size = "w-9 h-9" }: { name: string; size?: string }) => (
+const Avatar = ({ name, size = "w-9 h-9", img }: { name: string; size?: string; img?: string | null }) => (
+  img ? <img src={img} className={`${size} rounded-full object-cover shrink-0`} alt="" /> :
   <div className={`${size} rounded-full bg-gradient-to-br from-slate-300 to-slate-400 text-slate-700 flex items-center justify-center font-semibold shrink-0`}>{name[0]?.toUpperCase()}</div>
+);
+const Verified = ({ size = 15 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="#1d9bf0"><path d="M22.25 12c0-1.03-.63-2.46-1.36-3.34-.24-.29-.34-.78-.17-1.3.2-.6.2-1.7-.24-2.5-.44-.8-1.3-1.5-2.1-1.6-.72-.1-1.02-.42-1.3-.75-.9-.97-2.05-1.51-3.08-1.51s-2.18.54-3.08 1.51c-.28.33-.58.65-1.3.75-.8.1-1.66.8-2.1 1.6-.44.8-.44 1.9-.24 2.5.17.52.07 1.01-.17 1.3-.73.88-1.36 2.31-1.36 3.34 0 1.03.63 2.46 1.36 3.34.24.29.34.78.17 1.3-.2.6-.2 1.7.24 2.5.44.8 1.3 1.5 2.1 1.6.72.1 1.02.42 1.3.75.9.97 2.05 1.51 3.08 1.51s2.18-.54 3.08-1.51c.28-.33.58-.65 1.3-.75.8-.1 1.66-.8 2.1-1.6.44-.8.44-1.9.24-2.5-.17-.52-.07-1.01.17-1.3.73-.88 1.36-2.31 1.36-3.34zM10.9 15.9l-3.4-3.4 1.4-1.4 2 2 5.6-5.6 1.4 1.4z" /><path d="M10.9 15.9l-3.4-3.4 1.4-1.4 2 2 5.6-5.6 1.4 1.4z" fill="#fff" /></svg>
 );
 
 // ---------- CHAT ----------
-function ChatView({ slug, name, msgs, self, other, dark, img }: any) {
+function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified }: any) {
   const wa = slug.includes("whatsapp"), im = slug.includes("imessage"), dc = slug.includes("discord"), tg = slug.includes("telegram"), ms = slug.includes("messenger"), ig = slug.includes("instagram"), fv = slug.includes("fiverr");
   if (fv) {
     return (
@@ -103,8 +107,8 @@ function ChatView({ slug, name, msgs, self, other, dark, img }: any) {
       <div className="bg-white text-[#050505]">
         <div className="flex items-center justify-between px-6 pt-3 pb-1 text-[13px] font-semibold text-black"><span>09:13</span><span className="flex items-center gap-1.5">{I.signal}{I.wifi}{I.battery}</span></div>
         <div className="flex items-center gap-2 px-2 py-2 border-b border-black/10">{I.back("#0084ff")}
-          <div className="relative"><Avatar name={name} /><div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full" /></div>
-          <div className="leading-tight"><div className="font-semibold text-[16px]">{name}</div><div className="text-[12px] text-zinc-500">Active now</div></div>
+          <div className="relative"><Avatar name={name} img={avatar} /><div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full" /></div>
+          <div className="leading-tight"><div className="font-semibold text-[16px] flex items-center gap-1">{name}{verified && <Verified />}</div><div className="text-[12px] text-zinc-500">Active now</div></div>
           <div className="ml-auto flex items-center gap-3 pr-2">{I.phone()}{I.video()}</div>
         </div>
         <div className="px-4 py-3 space-y-2 min-h-[460px]">
@@ -122,7 +126,7 @@ function ChatView({ slug, name, msgs, self, other, dark, img }: any) {
   }
   if (wa) return (
     <div className="bg-[#0b141a] text-white">
-      <StatusBar notch={false} /><div className="flex items-center gap-2 px-3 py-2 bg-[#1f2c34]/80 backdrop-blur-xl" style={{ background: "rgba(31,44,52,0.75)" }}>{I.back("#aebac1")}<Avatar name={name} /><div className="flex-1 leading-tight"><div className="text-[15px]">{name}</div><div className="text-[12px] text-[#8696a0]">online</div></div><div className="flex gap-4 text-[#aebac1]">{I.video("#aebac1")}{I.phone("#aebac1")}</div></div>
+      <StatusBar notch={false} /><div className="flex items-center gap-2 px-3 py-2 bg-[#1f2c34]/80 backdrop-blur-xl" style={{ background: "rgba(31,44,52,0.75)" }}>{I.back("#aebac1")}<Avatar name={name} img={avatar} /><div className="flex-1 leading-tight"><div className="text-[15px] flex items-center gap-1">{name}{verified && <Verified size={13} />}</div><div className="text-[12px] text-[#8696a0]">online</div></div><div className="flex gap-4 text-[#aebac1]">{I.video("#aebac1")}{I.phone("#aebac1")}</div></div>
       <div className="p-3 space-y-1.5 min-h-[430px]" style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)", backgroundSize: "18px 18px" }}>
         <div className="flex justify-center"><span className="bg-[#182229] text-[11px] px-3 py-1 rounded-full text-[#ffd279] flex items-center gap-1">{I.lock} end-to-end encrypted</span></div>
         {msgs.map((m: Msg, i: number) => (
@@ -157,7 +161,7 @@ function ChatView({ slug, name, msgs, self, other, dark, img }: any) {
   // ---- 2026 dedicated: X / TikTok / Snapchat / Signal / Slack / Reddit ----
   if (slug.includes("fake-x-messages")) return (
     <div className="bg-black text-white">
-      <StatusBar /><div className="px-4 py-2.5 flex items-center gap-3"><Avatar name={name} /><div className="flex-1"><b className="text-[15px]">{name}</b><div className="text-[13px] text-zinc-500">@{name.toLowerCase().replace(/ /g, "")}</div></div><span className="text-zinc-400">{I.dots()}</span></div>
+      <StatusBar /><div className="px-4 py-2.5 flex items-center gap-3"><Avatar name={name} img={avatar} /><div className="flex-1"><b className="text-[15px] flex items-center gap-1">{name}{verified && <Verified />}</b><div className="text-[13px] text-zinc-500">@{name.toLowerCase().replace(/ /g, "")}</div></div><span className="text-zinc-400">{I.dots()}</span></div>
       <div className="p-3.5 space-y-2 min-h-[430px] border-t border-white/10">
         <div className="text-center text-[12px] text-zinc-500">This is the beginning of your message history with @{name.toLowerCase().replace(/ /g, "")}</div>
         {msgs.map((m: Msg, i: number) => (<div key={i} className={`flex ${m.me ? "justify-end" : "justify-start"}`}><div className={`${m.me ? "bg-[#1d9bf0]" : "bg-[#2f3336]"} px-4 py-2.5 rounded-[20px] max-w-[80%] text-[15px]`}>{m.text}</div></div>))}
@@ -341,16 +345,16 @@ function AIView({ slug, msgs }: any) {
   );
 }
 
-function PostView({ slug, name, msgs, img }: any) {
+function PostView({ slug, name, msgs, img, avatar, verified }: any) {
   const x = slug.includes("-x-");
   const txt = msgs[0]?.text || "Just figuring out Mockly!";
   const uname = name.toLowerCase().replace(/ /g, "");
   const Pic = ({ h = "h-48" }: { h?: string }) => img ? <img src={img} className={`${h} w-full mt-2.5 rounded-2xl object-cover`} /> : <div className={`${h} mt-2.5 rounded-2xl bg-[#1d1d1f]`} />;
-  if (x) return (<div className="bg-black text-white p-4"><div className="flex gap-2.5"><Avatar name={name} size="w-10 h-10" /><div className="flex-1"><div className="flex items-center gap-1"><b className="text-[15px]">{name}</b><span className="text-zinc-500 text-[14px]"> @{uname} · 2h</span></div><p className="text-[15px] mt-0.5">{txt}</p><Pic /><div className="flex justify-between text-zinc-500 mt-3 max-w-[300px]"><span className="flex items-center gap-1">{I.comment}<span className="text-[13px]">342</span></span><span className="flex items-center gap-1">{I.repost}<span className="text-[13px]">1.2K</span></span><span className="flex items-center gap-1">{I.heart()}<span className="text-[13px]">12K</span></span><span className="flex items-center gap-1">{I.chart}<span className="text-[13px]">2M</span></span></div></div></div></div>);
+  if (x) return (<div className="bg-black text-white p-4"><div className="flex gap-2.5"><Avatar name={name} size="w-10 h-10" img={avatar} /><div className="flex-1"><div className="flex items-center gap-1"><b className="text-[15px]">{name}</b>{verified && <Verified />}<span className="text-zinc-500 text-[14px]"> @{uname} · 2h</span></div><p className="text-[15px] mt-0.5">{txt}</p><Pic /><div className="flex justify-between text-zinc-500 mt-3 max-w-[300px]"><span className="flex items-center gap-1">{I.comment}<span className="text-[13px]">342</span></span><span className="flex items-center gap-1">{I.repost}<span className="text-[13px]">1.2K</span></span><span className="flex items-center gap-1">{I.heart()}<span className="text-[13px]">12K</span></span><span className="flex items-center gap-1">{I.chart}<span className="text-[13px]">2M</span></span></div></div></div></div>);
   if (slug.includes("instagram-post")) return (
     <div className="bg-white text-black">
       <div className="flex items-center gap-2.5 px-3 py-2.5"><div className="p-[2px] rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600"><div className="w-9 h-9 rounded-full bg-white p-[2px]"><div className="w-full h-full rounded-full bg-[#e4e6eb] flex items-center justify-center font-bold text-zinc-500">{name[0]}</div></div></div>
-      <b className="text-[14px]">{uname} <span className="text-zinc-400 font-normal">• 2h</span></b><span className="ml-auto text-lg tracking-widest">···</span></div>
+      <b className="text-[14px] flex items-center gap-1">{uname}{verified && <Verified size={13} />} <span className="text-zinc-400 font-normal">• 2h</span></b><span className="ml-auto text-lg tracking-widest">···</span></div>
       <div className="aspect-square bg-[#efefef] flex items-center justify-center"><div className="w-full h-full bg-gradient-to-br from-slate-100 to-slate-300" /></div>
       <div className="flex items-center gap-4 px-3 pt-2.5">{I.heart()}<span className="[&>svg]:w-[22px]">{I.comment}</span><span>{I.share}</span><span className="ml-auto text-xl">▢</span></div>
       <div className="px-3 pt-1.5 pb-3 text-[14px]"><b>12,483 likes</b><div><b>{uname}</b> {txt}</div><div className="text-zinc-500">View all 342 comments</div></div>
@@ -479,6 +483,14 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
   const [draft, setDraft] = useState("");
   const [asMe, setAsMe] = useState(false);
   const [img, setImg] = useState<string | null>(null);
+  const [avatar, setAvatar] = useState<string | null>(null);
+  const [verified, setVerified] = useState(false);
+  const onAvatar = (f: File | undefined) => {
+    if (!f) return;
+    const r = new FileReader();
+    r.onload = () => setAvatar(r.result as string);
+    r.readAsDataURL(f);
+  };
   const [proOpen, setProOpen] = useState(false);
   const [adGate, setAdGate] = useState(false);
   const [adClicked, setAdClicked] = useState(false);
@@ -561,6 +573,11 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
       <div className="w-full lg:w-[340px] p-5 space-y-3.5 bg-white border border-black/10 rounded-2xl h-fit shrink-0 shadow-sm">
         <div className="text-[11px] font-bold uppercase tracking-widest text-zinc-400">fakie. editor</div>
         <label className="block text-[13px] font-semibold">Contact name<input value={name} onChange={(e) => setName(e.target.value)} className="mt-1.5 w-full bg-[#f4f4f5] border border-black/10 rounded-xl px-3.5 py-2.5 text-black outline-none focus:border-black font-normal" /></label>
+        <div className="flex items-center gap-2.5">
+          <label className="flex items-center gap-2 cursor-pointer">{avatar ? <img src={avatar} className="w-10 h-10 rounded-full object-cover" /> : <span className="w-10 h-10 rounded-full bg-zinc-100 border-[1.5px] border-dashed border-black/20 flex items-center justify-center text-lg text-zinc-400">+</span>}<span className="text-[12px] font-semibold text-zinc-600">Profile pic<input type="file" accept="image/*" className="hidden" onChange={(e) => onAvatar(e.target.files?.[0])} /></span></label>
+          {avatar && <button onClick={() => setAvatar(null)} className="text-[11px] text-zinc-400">Remove</button>}
+          <button onClick={() => setVerified(!verified)} className={`ml-auto text-[12px] font-bold px-3 py-1.5 rounded-full border ${verified ? "bg-[#1d9bf0] text-white border-[#1d9bf0]" : "border-black/15 text-zinc-500"}`}>{verified ? "✓ Verified" : "Verify?"}</button>
+        </div>
         <div className="bg-[#f4f4f5] rounded-xl p-1 flex gap-1 text-[13px] font-semibold">
           <button onClick={() => setAsMe(false)} className={`flex-1 py-2 rounded-lg ${!asMe ? "bg-white shadow-sm" : "text-zinc-500"}`}>Them</button>
           <button onClick={() => setAsMe(true)} className={`flex-1 py-2 rounded-lg ${asMe ? "bg-white shadow-sm" : "text-zinc-500"}`}>Me</button>
@@ -585,13 +602,13 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
         <div>
         <div ref={ref} className={`${frameless ? "rounded-xl" : "rounded-[3rem] border-[12px] border-black shadow-[0_0_0_2px_#e5e5e5]"} w-[375px] overflow-hidden relative`}>
           {gen.kind === "ai-chat" ? <AIView slug={slug} msgs={msgs} />
-            : gen.kind === "post" ? <PostView slug={slug} name={name} msgs={msgs} img={img} />
+            : gen.kind === "post" ? <PostView slug={slug} name={name} msgs={msgs} img={img} avatar={avatar} verified={verified} />
             : gen.kind === "comments" ? <CommentsView slug={slug} msgs={msgs} />
             : gen.kind === "story" ? <StoryView name={name} msgs={msgs} slug={slug} />
             : gen.kind === "email" ? <EmailView slug={slug} name={name} msgs={msgs} />
             : gen.kind === "notification" ? <NotifView name={name} msgs={msgs} />
             : gen.kind === "tool" ? <ToolView slug={slug} name={name} />
-            : <ChatView slug={slug} name={name} msgs={msgs} self={gen.bubbleSelf} other={gen.bubbleOther} dark={dark} img={img} />}
+            : <ChatView slug={slug} name={name} msgs={msgs} self={gen.bubbleSelf} other={gen.bubbleOther} dark={dark} img={img} avatar={avatar} verified={verified} />}
         </div>
         <p className="text-center text-[12px] text-zinc-400 mt-3">{isPro ? "HD export • No ads" : "Free export (standard quality)"} • <button onClick={() => setProOpen(true)} className="underline font-semibold text-black">Go Pro — HD $8/mo</button></p>
         {!isPro && <AdSlot slot="preview-bottom" />}
