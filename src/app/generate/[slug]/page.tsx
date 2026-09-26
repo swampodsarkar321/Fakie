@@ -116,7 +116,7 @@ function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified }
           {msgs.map((m: Msg, i: number) => m.me ? (
             <div key={i} className="flex justify-end"><div className="text-white text-[15px] px-3 py-2 rounded-[18px] max-w-[75%]" style={{ background: ms ? "linear-gradient(90deg,#a334fa,#0084ff)" : "#3797f0" }}>{m.text}</div></div>
           ) : (
-            <div key={i} className="flex items-end gap-1.5"><div className="w-6 h-6 rounded-full bg-[#e4e6eb] text-[10px] flex items-center justify-center font-bold text-zinc-500 shrink-0">{name[0]}</div><div className="bg-[#e4e6eb] text-[15px] px-3 py-2 rounded-[18px] max-w-[75%]">{m.text}</div></div>
+            <div key={i} className="flex items-end gap-1.5">{avatar ? <img src={avatar} className="w-6 h-6 rounded-full object-cover shrink-0" alt="" /> : <div className="w-6 h-6 rounded-full bg-[#e4e6eb] text-[10px] flex items-center justify-center font-bold text-zinc-500 shrink-0">{name[0]}</div>}<div className="bg-[#e4e6eb] text-[15px] px-3 py-2 rounded-[18px] max-w-[75%]">{m.text}</div></div>
           ))}
           {img && <div className="flex justify-end"><img src={img} className="rounded-[18px] max-w-[75%] object-cover" /></div>}
         </div>
