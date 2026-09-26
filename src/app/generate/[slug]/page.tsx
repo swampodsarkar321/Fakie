@@ -481,7 +481,8 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
   const [img, setImg] = useState<string | null>(null);
   const [proOpen, setProOpen] = useState(false);
   const [adGate, setAdGate] = useState(false);
-  const [count, setCount] = useState(5);
+  const [adClicked, setAdClicked] = useState(false);
+  const [count, setCount] = useState(10);
   const [isPro, setIsPro] = useState(false);
   useEffect(() => {
     const un = onAuthStateChanged(auth, (u) => {
@@ -502,13 +503,24 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
   const add = () => { if (!draft.trim()) return; setMsgs([...msgs, { me: asMe, text: draft, time: "09:44" }]); setDraft(""); };
   useEffect(() => {
     if (!adGate) return;
-    setCount(5);
-    const t = setInterval(() => setCount((c) => {
-      if (c <= 1) { clearInterval(t); return 0; }
-      return c - 1;
-    }), 1000);
-    return () => clearInterval(t);
+    setAdClicked(false);
+    setCount(10);
   }, [adGate]);
+  useEffect(() => {
+    if (!adGate || !adClicked || count <= 0) return;
+    const t = setTimeout(() => setCount((c) => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [adGate, adClicked, count]);
+  const SMARTLINK = "https://www.profitableratecpmnetwork.com/kx4e786uky?key=c4ecf6dfa0afd701bd35e01f02d0e4e9";
+  const openAd = () => {
+    window.open(SMARTLINK, "_blank", "noopener");
+    setAdClicked(true);
+    // verify log → Firebase
+    import("firebase/database").then(({ ref: r, push }) => {
+      const u = auth.currentUser;
+      push(r(db, `adViews`), { uid: u?.uid ?? "anon", slug, at: Date.now() }).catch(() => {});
+    });
+  };
   const doDownload = async () => {
     if (!ref.current) return;
     const url = await toPng(ref.current, { cacheBust: true, pixelRatio: isPro ? 3 : 1 });
@@ -576,14 +588,15 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-3xl p-6 w-full max-w-[340px] text-center">
             <b className="text-[17px]">Watch ad to download</b>
-            <p className="text-[13px] text-zinc-500 mt-1">Free download after the ad • Pro = instant HD, no ads</p>
-            <AdSlot slot="download-gate" />
-            {count > 0 ? (
-              <div className="text-[14px] font-bold text-zinc-500">Download in {count}s…</div>
+            <p className="text-[13px] text-zinc-500 mt-1">Step 1: open the sponsor ad • Step 2: wait 10s • Step 3: download</p>
+            {!adClicked ? (
+              <button onClick={openAd} className="w-full bg-[#0b57d0] text-white font-bold py-3 rounded-xl mt-4">Open Sponsor Ad ↗</button>
+            ) : count > 0 ? (
+              <div className="mt-4"><div className="text-[14px] font-bold text-green-600">✓ Ad opened — verifying… {count}s</div><div className="h-2 bg-zinc-100 rounded-full mt-2 overflow-hidden"><div className="h-full bg-green-500 transition-all" style={{ width: `${(10 - count) * 10}%` }} /></div></div>
             ) : (
-              <button onClick={() => { setAdGate(false); doDownload(); }} className="w-full bg-black text-white font-bold py-3 rounded-xl">Download PNG</button>
+              <button onClick={() => { setAdGate(false); doDownload(); }} className="w-full bg-black text-white font-bold py-3 rounded-xl mt-4">✓ Verified — Download PNG</button>
             )}
-            <button onClick={() => setProOpen(true)} className="w-full text-[13px] font-bold mt-2.5 text-black underline">Skip ads forever — Go Pro</button>
+            <button onClick={() => setProOpen(true)} className="w-full text-[13px] font-bold mt-3 text-black underline">Skip ads forever — Go Pro</button>
             <button onClick={() => setAdGate(false)} className="text-[12px] text-zinc-400 mt-1.5">Maybe later</button>
           </div>
         </div>
