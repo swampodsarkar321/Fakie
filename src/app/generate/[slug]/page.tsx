@@ -698,7 +698,7 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
             : gen.kind === "notification" ? <NotifView name={name} msgs={msgs} />
             : gen.kind === "tool" ? <ToolView slug={slug} name={name} />
             : <ChatView slug={slug} name={name} msgs={msgs} self={gen.bubbleSelf} other={gen.bubbleOther} dark={dark} img={img} avatar={avatar} verified={verified} dateLabel={dateLabel} imgSide={imgSide} />}
-          {wmOn && <div className="absolute bottom-1.5 right-1.5 bg-black/55 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md backdrop-blur-sm">fakie.</div>}
+          {wmOn && <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/70 text-white text-[11px] font-bold px-3.5 py-1 rounded-full whitespace-nowrap">Made with fakie.</div>}
           {!dlBusy && (
             <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden">
               <div className="absolute -inset-[45%] flex flex-wrap content-center justify-center gap-x-10 gap-y-12 opacity-100" style={{ transform: "rotate(-24deg)", mixBlendMode: "difference" }}>
