@@ -44,7 +44,7 @@ function StatusBar({ dark = true, notch = true }: { dark?: boolean; notch?: bool
 }
 const Avatar = ({ name, size = "w-9 h-9", img }: { name: string; size?: string; img?: string | null }) => (
   img ? <img src={img} className={`${size} rounded-full object-cover shrink-0`} alt="" /> :
-  <div className={`${size} rounded-full bg-gradient-to-br from-slate-300 to-slate-400 text-slate-700 flex items-center justify-center font-semibold shrink-0`}>{name[0]?.toUpperCase()}</div>
+  <div className={`${size} rounded-full bg-[#c9cdd3] flex items-center justify-center shrink-0 overflow-hidden`}><svg viewBox="0 0 24 24" className="w-[62%] h-[62%]" fill="#fff"><path d="M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9zm0 2c-4.4 0-8 2.2-8 5v1.5h16V19c0-2.8-3.6-5-8-5z"/></svg></div>
 );
 const Verified = ({ size = 15 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="#1d9bf0"><path d="M22.25 12c0-1.03-.63-2.46-1.36-3.34-.24-.29-.34-.78-.17-1.3.2-.6.2-1.7-.24-2.5-.44-.8-1.3-1.5-2.1-1.6-.72-.1-1.02-.42-1.3-.75-.9-.97-2.05-1.51-3.08-1.51s-2.18.54-3.08 1.51c-.28.33-.58.65-1.3.75-.8.1-1.66.8-2.1 1.6-.44.8-.44 1.9-.24 2.5.17.52.07 1.01-.17 1.3-.73.88-1.36 2.31-1.36 3.34 0 1.03.63 2.46 1.36 3.34.24.29.34.78.17 1.3-.2.6-.2 1.7.24 2.5.44.8 1.3 1.5 2.1 1.6.72.1 1.02.42 1.3.75.9.97 2.05 1.51 3.08 1.51s2.18-.54 3.08-1.51c.28-.33.58-.65 1.3-.75.8-.1 1.66-.8 2.1-1.6.44-.8.44-1.9.24-2.5-.17-.52-.07-1.01.17-1.3.73-.88 1.36-2.31 1.36-3.34zM10.9 15.9l-3.4-3.4 1.4-1.4 2 2 5.6-5.6 1.4 1.4z" /><path d="M10.9 15.9l-3.4-3.4 1.4-1.4 2 2 5.6-5.6 1.4 1.4z" fill="#fff" /></svg>
@@ -125,7 +125,7 @@ function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified, 
       <StatusBar notch={false} /><div className="flex items-center gap-1.5 px-2 py-1.5 bg-[#1f2c34]">{I.back("#aebac1")}<Avatar name={name} img={avatar} /><div className="flex-1 leading-tight ml-1"><div className="text-[16px] flex items-center gap-1">{name}{verified && <Verified size={13} />}</div><div className="text-[12.5px] text-[#8696a0]">online</div></div><div className="flex gap-5 pr-2 text-[#aebac1]">{I.video("#aebac1")}{I.phone("#aebac1")}</div></div>
       <div className="p-3 space-y-1.5 min-h-[430px]" style={{ backgroundColor: "#0b141a", backgroundImage: "radial-gradient(rgba(134,150,160,0.08) 1px, transparent 1.5px)", backgroundSize: "20px 20px" }}>
         <div className="flex justify-center"><span className="bg-[#182229] text-[12px] px-3 py-1.5 rounded-lg text-[#ffd279] flex items-center gap-1 max-w-[90%] text-center">Messages are end-to-end encrypted. No one outside of this chat can read them.</span></div>
-        <div className="flex justify-center"><span className="bg-[#182229] text-[12px] px-3 py-1.5 rounded-lg text-[#8696a0]">{dateLabel === "Today" ? "TODAY" : dateLabel?.toUpperCase()}</span></div>
+        <div className="flex justify-center"><span className="bg-[#182229] text-[12px] px-3 py-1.5 rounded-lg text-[#8696a0]">{dateLabel === "Today" ? "Today" : dateLabel}</span></div>
         {msgs.map((m: Msg, i: number) => (
           <div key={i} className={`flex ${m.me ? "justify-end" : "justify-start"}`}><div className={`${m.me ? "bg-[#005c4b]" : "bg-[#1f2c34]"} rounded-lg px-2.5 py-1.5 max-w-[80%] text-[14.8px] leading-[1.4] relative shadow-sm`}><span className="absolute top-0 w-2 h-3" style={m.me ? { right: -5, background: "#005c4b", clipPath: "polygon(0 0, 0 100%, 100% 0)" } : { left: -5, background: "#1f2c34", clipPath: "polygon(100% 0, 100% 100%, 0 0)" }} /><p className="pr-14">{m.text}</p><span className="absolute bottom-1 right-2 text-[11px] text-[#8696a0] flex items-center gap-1">{m.time}{m.me && (m.seen === "seen" ? <span className="text-[#53bdeb]"><svg width="15" height="10" viewBox="0 0 20 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M1 6.5L4.5 10 11 2M8 6.5l3.5 3.5L18 2"/></svg></span> : m.seen === "delivered" ? <span className="text-[#8696a0]"><svg width="15" height="10" viewBox="0 0 20 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M1 6.5L4.5 10 11 2M8 6.5l3.5 3.5L18 2"/></svg></span> : <span className="text-[#8696a0]">✓</span>)}</span></div></div>
         ))}
@@ -472,7 +472,7 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
   const ref = useRef<HTMLDivElement>(null);
   const [name, setName] = useState("Alex Morgan");
   const [dark, setDark] = useState(true);
-  const [frameless, setFrameless] = useState(false);
+  const [frameless, setFrameless] = useState(true);
   const [msgs, setMsgs] = useState<Msg[]>([
     { me: false, text: "Hey, what are you doing?", time: "09:41" },
     { me: true, text: "Just figuring out Mockly!", time: "09:42", seen: "seen" },
