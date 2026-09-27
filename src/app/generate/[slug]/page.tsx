@@ -538,19 +538,44 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
     if (!ref.current || dlBusy) return;
     setDlBusy(true);
     try {
-      const imgs = Array.from(ref.current.querySelectorAll("img"));
-      await Promise.all(imgs.map((im) => (im.complete ? null : new Promise((res) => { im.onload = res; im.onerror = res; }))));
-      await document.fonts?.ready;
-      const url = await toPng(ref.current, { pixelRatio: gateMode === "hd" ? 3 : 1 });
-      const a = document.createElement("a"); a.download = `${gen.slug}-${gateMode}.png`; a.href = url;
-      document.body.appendChild(a); a.click(); a.remove();
+      setWmOn(false);
+      await new Promise((r) => setTimeout(r, 60));
+      const url = await capture(gateMode === "hd" ? 3 : 1);
+      if (url) save(url, `${gen.slug}-${gateMode}.png`);
     } catch (e) {
       alert("Download failed — please turn off AdBlock and try again.");
     } finally {
       setDlBusy(false);
     }
   };
+  const doDownloadSD = async () => {
+    if (!ref.current || dlBusy) return;
+    setDlBusy(true);
+    try {
+      setWmOn(true); // standard = watermark, no ads
+      await new Promise((r) => setTimeout(r, 60));
+      const url = await capture(1);
+      if (url) save(url, `${gen.slug}-standard.png`);
+    } catch (e) {
+      alert("Download failed — please turn off AdBlock and try again.");
+    } finally {
+      setDlBusy(false);
+      setWmOn(false);
+    }
+  };
   const [dlBusy, setDlBusy] = useState(false);
+  const [wmOn, setWmOn] = useState(false);
+  const capture = async (ratio: number) => {
+    if (!ref.current) return null;
+    const imgs = Array.from(ref.current.querySelectorAll("img"));
+    await Promise.all(imgs.map((im) => (im.complete ? null : new Promise((res) => { im.onload = res; im.onerror = res; }))));
+    await document.fonts?.ready;
+    return toPng(ref.current, { pixelRatio: ratio });
+  };
+  const save = (url: string, name: string) => {
+    const a = document.createElement("a"); a.download = name; a.href = url;
+    document.body.appendChild(a); a.click(); a.remove();
+  };
   const shareImage = async () => {
     if (!ref.current) return;
     try {
@@ -576,8 +601,7 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
     setAdGate(true);
   };
   const exportSD = async () => {
-    setGateMode("sd");
-    setAdGate(true);
+    doDownloadSD(); // standard: no ads, low quality + watermark
   };
   return (
     <div className="min-h-screen bg-[#f4f4f5] text-black">
@@ -631,10 +655,10 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
           </button>
           <button onClick={exportSD} disabled={dlBusy} className="w-full bg-white font-semibold py-2.5 rounded-2xl hover:bg-zinc-50 disabled:opacity-60 text-[13.5px] text-zinc-600 border border-black/10 flex items-center justify-center gap-2 transition-all">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 20h16" /></svg>
-            Standard quality <span className="text-zinc-400">• 1 ad</span>
+            Standard quality <span className="text-zinc-400">• no ads • watermark</span>
           </button>
         </div>
-        <p className="text-center text-[12px] text-zinc-400">Free forever • HD after 2 short ads</p>
+        <p className="text-center text-[12px] text-zinc-400">Standard = free, no ads, watermark • HD = no watermark, 2 short ads</p>
         <AdSlot slot="editor-sidebar" />
       </div>
       <div className="flex-1 flex items-start justify-center p-6 bg-white border border-black/10 rounded-2xl shadow-sm" style={{ backgroundImage: "radial-gradient(#d4d4d8 1px, transparent 1px)", backgroundSize: "20px 20px" }}>
@@ -648,7 +672,7 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
             : gen.kind === "notification" ? <NotifView name={name} msgs={msgs} />
             : gen.kind === "tool" ? <ToolView slug={slug} name={name} />
             : <ChatView slug={slug} name={name} msgs={msgs} self={gen.bubbleSelf} other={gen.bubbleOther} dark={dark} img={img} avatar={avatar} verified={verified} dateLabel={dateLabel} />}
-          <div className="absolute bottom-1.5 right-1.5 bg-black/55 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md backdrop-blur-sm">fakie.</div>
+          {wmOn && <div className="absolute bottom-1.5 right-1.5 bg-black/55 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md backdrop-blur-sm">fakie.</div>}
         </div>
         <p className="text-center text-[12px] text-zinc-400 mt-3">HD export • Watch 2 short ads</p>
         <AdSlot slot="preview-bottom" />
