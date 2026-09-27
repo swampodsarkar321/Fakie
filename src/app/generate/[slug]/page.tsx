@@ -53,8 +53,17 @@ const Verified = ({ size = 15 }: { size?: number }) => (
 );
 
 // ---------- CHAT ----------
-function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified, dateLabel }: any) {
+function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified, dateLabel, imgSide }: any) {
   const barTime = useContext(BarCtx);
+  const mine = imgSide !== "them";
+  const tick = mine ? <span className="text-[#53bdeb]"><svg width="15" height="10" viewBox="0 0 20 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M1 6.5L4.5 10 11 2M8 6.5l3.5 3.5L18 2"/></svg></span> : null;
+  const ImgMsg = () => {
+    if (!img) return null;
+    const side = `flex ${mine ? "justify-end" : "justify-start"}`;
+    if (slug.includes("whatsapp")) return (<div className={side}><div className={`${mine ? "bg-[#005c4b]" : "bg-[#1f2c34]"} max-w-[75%] rounded-lg p-1 shadow-sm`}><img src={img} className="rounded-md w-full object-cover" /><div className="text-[11px] text-[#8696a0] text-right px-1 py-0.5 flex items-center justify-end gap-1">{barTime}{tick}</div></div></div>);
+    if (slug.includes("telegram")) return (<div className={side}><div className={`${mine ? "bg-[#d9fdd3]" : "bg-white"} max-w-[75%] rounded-lg p-1 shadow-sm`}><img src={img} className="rounded-md w-full object-cover" /><div className="text-[11px] text-[#6aa84f] text-right px-1">{barTime}{mine ? " ✓✓" : ""}</div></div></div>);
+    return (<div className={side}>{!mine && slug.includes("messenger") ? <div className="w-6 h-6 rounded-full bg-[#e4e6eb] text-[10px] flex items-center justify-center font-bold text-zinc-500 shrink-0 self-end mr-1">{name[0]}</div> : null}<img src={img} className="rounded-[18px] max-w-[70%] object-cover" /></div>);
+  };
   const wa = slug.includes("whatsapp"), im = slug.includes("imessage"), dc = slug.includes("discord"), tg = slug.includes("telegram"), ms = slug.includes("messenger"), ig = slug.includes("instagram"), fv = slug.includes("fiverr");
   if (fv) {
     return (
@@ -117,7 +126,7 @@ function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified, 
             <div key={i} className="flex items-end gap-1.5">{avatar ? <img src={avatar} className="w-6 h-6 rounded-full object-cover shrink-0" alt="" /> : <div className="w-6 h-6 rounded-full bg-[#e4e6eb] text-[10px] flex items-center justify-center font-bold text-zinc-500 shrink-0">{name[0]}</div>}<div className="bg-[#e4e6eb] text-[15px] px-3 py-2 rounded-[18px] max-w-[75%]">{m.text}</div></div>
           ))}
           {(() => { const last = [...msgs].reverse().find((m) => m.me && m.seen === "seen"); return last ? (<div className="flex justify-end items-center gap-1 text-[11px] text-zinc-500">{avatar ? <img src={avatar} className="w-3.5 h-3.5 rounded-full object-cover" alt="" /> : null}Seen {last.time}</div>) : null; })()}
-          {img && <div className="flex justify-end"><img src={img} className="rounded-[18px] max-w-[75%] object-cover" /></div>}
+          <ImgMsg />
         </div>
         <div className="flex items-center gap-2.5 px-2 py-2.5 border-t border-black/5 text-[#0084ff]"><span className="font-bold text-lg">›</span>{I.comment}{I.clip}{I.sendUp}<div className="flex-1" /></div>
       </div>
@@ -132,7 +141,7 @@ function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified, 
         {msgs.map((m: Msg, i: number) => (
           <div key={i} className={`flex ${m.me ? "justify-end" : "justify-start"}`}><div className={`${m.me ? "bg-[#005c4b]" : "bg-[#1f2c34]"} rounded-lg px-2.5 py-1.5 max-w-[80%] text-[14.8px] leading-[1.4] relative shadow-sm`}><span className="absolute top-0 w-2 h-3" style={m.me ? { right: -5, background: "#005c4b", clipPath: "polygon(0 0, 0 100%, 100% 0)" } : { left: -5, background: "#1f2c34", clipPath: "polygon(100% 0, 100% 100%, 0 0)" }} /><p className="pr-14">{m.text}</p><span className="absolute bottom-1 right-2 text-[11px] text-[#8696a0] flex items-center gap-1">{m.time}{m.me && (m.seen === "seen" ? <span className="text-[#53bdeb]"><svg width="15" height="10" viewBox="0 0 20 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M1 6.5L4.5 10 11 2M8 6.5l3.5 3.5L18 2"/></svg></span> : m.seen === "delivered" ? <span className="text-[#8696a0]"><svg width="15" height="10" viewBox="0 0 20 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M1 6.5L4.5 10 11 2M8 6.5l3.5 3.5L18 2"/></svg></span> : <span className="text-[#8696a0]">✓</span>)}</span></div></div>
         ))}
-        {img && <div className="flex justify-end"><div className="max-w-[80%] rounded-lg overflow-hidden bg-[#005c4b] p-1"><img src={img} className="rounded-md w-full object-cover" /><div className="text-[11px] text-[#8696a0] text-right px-1 py-0.5">9:41 ✓✓</div></div></div>}
+        <ImgMsg />
       </div>
       <div className="px-2 pb-4 pt-1 flex gap-2 items-center"><div className="flex-1 flex gap-2 items-center rounded-full bg-[#1f2c34] px-2 py-1.5"><span className="text-[#8696a0] pl-1">☺</span><div className="flex-1 text-[16px] text-[#8696a0]">Message</div><div className="text-[#8696a0] pr-1">{I.clip}</div></div><div className="w-11 h-11 rounded-full bg-[#00a884] flex items-center justify-center shrink-0">{I.micWa}</div></div>
     </div>
@@ -141,7 +150,7 @@ function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified, 
     <div className="bg-white text-black" style={{ fontFamily: "-apple-system,BlinkMacSystemFont,'SF Pro Text',Inter,sans-serif" }}><StatusBar dark={false} />
       <div className="flex items-center px-2 py-1.5 border-b border-black/10">{I.back("#0a84ff")}<div className="flex-1 flex flex-col items-center -ml-3"><Avatar name={name} img={avatar} size="w-10 h-10" /><div className="font-semibold text-[11px] mt-0.5 flex items-center gap-0.5">{name}</div></div><span className="text-[#0a84ff] pr-2"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M4 8.5A3.5 3.5 0 0 1 7.5 5h9A3.5 3.5 0 0 1 20 8.5v7a3.5 3.5 0 0 1-3.5 3.5h-5.2l-4 3.2c-.5.4-1.3.1-1.3-.6z"/></svg></span></div>
       <div className="px-3 py-3 space-y-1 min-h-[420px] bg-white"><div className="text-center text-[11px] text-zinc-400 font-medium">{dateLabel} {barTime} AM</div>{msgs.map((m: Msg, i: number) => (<div key={i} className={`flex ${m.me ? "justify-end" : "justify-start"}`}><div className={`${m.me ? "bg-[#1982FC] text-white rounded-br-[4px]" : "bg-[#e9e9eb] text-black rounded-bl-[4px]"} px-3 py-1.5 rounded-[18px] max-w-[72%] text-[16px] leading-[1.35]`}>{m.text}</div></div>))}
-        {img && <div className="flex justify-end"><img src={img} className="rounded-[18px] max-w-[72%] object-cover" /></div>}
+        <ImgMsg />
         {(() => { const last = [...msgs].reverse().find((m) => m.me && m.seen); return last ? (<div className="text-[11px] text-zinc-400 text-right font-medium pr-1">{last.seen === "seen" ? "Read" : last.seen === "delivered" ? "Delivered" : "Sent"} {last.time}</div>) : null; })()}</div>
       <div className="p-2.5 flex gap-2 items-center border-t border-black/10"><div className="w-8 h-8 rounded-full bg-zinc-200 text-zinc-500 flex items-center justify-center text-xl font-light">+</div><div className="flex-1 rounded-full px-4 py-2 text-[16px] text-zinc-400 border border-black/20">iMessage</div><span className="text-[#1982FC]"><svg width="30" height="30" viewBox="0 0 30 30"><circle cx="15" cy="15" r="14" fill="currentColor"/><path d="M15 21V9M10 14l5-5 5 5" stroke="#fff" strokeWidth="2.2" fill="none" strokeLinecap="round"/></svg></span></div>
     </div>
@@ -165,7 +174,7 @@ function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified, 
       <div className="p-3.5 space-y-2 min-h-[430px] border-t border-white/10">
         <div className="text-center text-[12px] text-zinc-500">This is the beginning of your message history with @{name.toLowerCase().replace(/ /g, "")}</div>
         {msgs.map((m: Msg, i: number) => (<div key={i} className={`flex ${m.me ? "justify-end" : "justify-start"}`}><div className={`${m.me ? "bg-[#1d9bf0]" : "bg-[#2f3336]"} px-4 py-2.5 rounded-[20px] max-w-[80%] text-[15px]`}>{m.text}</div></div>))}
-        {img && <div className="flex justify-end"><img src={img} className="rounded-[20px] max-w-[80%] object-cover" /></div>}
+        <ImgMsg />
       </div>
       <div className="p-3 flex gap-2 items-center border-t border-white/10"><div className="flex-1 bg-[#202327] rounded-full px-4 py-2.5 text-[14px] text-zinc-500">Start a new message</div><span className="text-[#1d9bf0]">{I.sendUp}</span></div>
     </div>
@@ -176,7 +185,7 @@ function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified, 
       <div className="p-3.5 space-y-2 min-h-[430px] bg-white">
         <div className="text-center text-[11px] text-zinc-400 bg-zinc-100 rounded-full px-3 py-1 w-fit mx-auto">Today</div>
         {msgs.map((m: Msg, i: number) => (<div key={i} className={`flex ${m.me ? "justify-end" : "justify-start"}`}><div className={`${m.me ? "bg-[#fe2c55] text-white" : "bg-[#f1f1f2] text-black"} px-3.5 py-2.5 rounded-[18px] max-w-[78%] text-[15px]`}>{m.text}</div></div>))}
-        {img && <div className="flex justify-end"><img src={img} className="rounded-[18px] max-w-[78%] object-cover" /></div>}
+        <ImgMsg />
       </div>
       <div className="p-3 flex gap-2 items-center border-t border-black/10"><div className="flex-1 bg-[#f1f1f2] rounded-full px-4 py-2.5 text-[14px] text-zinc-500">Send message…</div><div className="w-9 h-9 rounded-full bg-[#fe2c55] text-white flex items-center justify-center font-bold">↑</div></div>
     </div>
@@ -187,7 +196,7 @@ function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified, 
       <div className="p-3.5 space-y-2.5 min-h-[420px]">
         {msgs.map((m: Msg, i: number) => (<div key={i} className={`flex ${m.me ? "justify-end" : "justify-start"}`}><div className={`${m.me ? "bg-[#fffc00]" : "bg-[#f0f0f0]"} px-3.5 py-2 rounded-[18px] max-w-[78%] text-[15px] border ${m.me ? "border-black/10" : "border-black/5"}`}>{m.text}</div></div>))}
         <div className="border border-dashed border-black/20 rounded-2xl p-3 text-center text-[13px] text-zinc-500">Saved in chat • Screenshots notify</div>
-        {img && <div className="flex justify-end"><img src={img} className="rounded-[18px] max-w-[78%] object-cover border border-black/10" /></div>}
+        <ImgMsg />
       </div>
       <div className="p-3 flex gap-2 items-center border-t border-black/10"><div className="flex-1 border border-black/15 rounded-full px-4 py-2.5 text-[14px] text-zinc-400">Send a chat</div></div>
     </div>
@@ -198,7 +207,7 @@ function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified, 
       <div className="p-3.5 space-y-2 min-h-[430px] bg-[#e9e9eb]/40">
         <div className="text-center text-[11px] text-zinc-500 bg-white rounded-lg px-3 py-1.5 w-fit mx-auto shadow-sm">🔒 End-to-end encrypted • Safety numbers verified</div>
         {msgs.map((m: Msg, i: number) => (<div key={i} className={`flex ${m.me ? "justify-end" : "justify-start"}`}><div className={`${m.me ? "bg-[#3a76f0] text-white" : "bg-white text-black shadow-sm"} px-3.5 py-2.5 rounded-[18px] max-w-[78%] text-[15px]`}>{m.text}<span className="text-[10px] opacity-60 ml-1.5">{m.time}</span></div></div>))}
-        {img && <div className="flex justify-end"><img src={img} className="rounded-[18px] max-w-[78%] object-cover" /></div>}
+        <ImgMsg />
       </div>
       <div className="p-3 bg-white flex gap-2 items-center"><div className="flex-1 bg-zinc-100 rounded-full px-4 py-2.5 text-[14px] text-zinc-500">Signal message</div></div>
     </div>
@@ -257,7 +266,7 @@ function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified, 
               {!m.me && <Avatar name={name} size="w-7 h-7" img={avatar} />}
               <div style={{ background: m.me ? a.me : a.them, color: m.me ? a.tc : a.tmc }} className="px-3 py-2 rounded-2xl max-w-[75%] text-[14.5px] shadow-sm">{m.text}<span className="text-[10px] opacity-60 ml-1.5">{m.time}{m.me && m.seen === "seen" ? " • Seen" : m.me && m.seen === "delivered" ? " • Delivered" : ""}</span></div>
             </div>))}
-          {img && <div className="flex justify-end"><img src={img} className="rounded-2xl max-w-[70%] object-cover" /></div>}
+          <ImgMsg />
         </div>
         <div className="px-3.5 py-3 flex items-center gap-2.5 border-t border-black/10"><div className="flex-1 rounded-full px-4 py-2 text-[14px] border border-black/10 opacity-60">Message {name}...</div>{I.sendUp}</div>
       </div>
@@ -500,6 +509,7 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
   const [adClicked, setAdClicked] = useState(false);
   const [count, setCount] = useState(10);
   const [tabWarn, setTabWarn] = useState(false);
+  const [imgSide, setImgSide] = useState<"me" | "them">("me");
   const onFile = (f: File | undefined) => {
     if (!f) return;
     const r = new FileReader();
@@ -643,6 +653,7 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
           <input type="file" accept="image/*" className="hidden" onChange={(e) => onFile(e.target.files?.[0])} />
         </label>
         {img && <div className="relative"><img src={img} className="rounded-xl w-full h-28 object-cover" /><button onClick={() => setImg(null)} className="absolute top-1.5 right-1.5 bg-black text-white text-[11px] font-semibold px-2.5 py-1 rounded-full">Remove</button></div>}
+        {img && gen.kind === "chat" && <div className="flex gap-2"><button onClick={() => setImgSide("me")} className={`flex-1 py-2 rounded-xl text-[13px] font-semibold border ${imgSide === "me" ? "bg-black text-white border-black" : "bg-white text-zinc-600 border-black/10"}`}>Sent by you</button><button onClick={() => setImgSide("them")} className={`flex-1 py-2 rounded-xl text-[13px] font-semibold border ${imgSide === "them" ? "bg-black text-white border-black" : "bg-white text-zinc-600 border-black/10"}`}>Sent by them</button></div>}
         <div className="space-y-1.5 max-h-52 overflow-auto">
           {msgs.map((m, i) => (
             <div key={i} className="group flex items-center gap-1.5 bg-[#f4f4f5] rounded-xl px-2.5 py-2 text-[13px]">
@@ -679,7 +690,7 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
             : gen.kind === "email" ? <EmailView slug={slug} name={name} msgs={msgs} />
             : gen.kind === "notification" ? <NotifView name={name} msgs={msgs} />
             : gen.kind === "tool" ? <ToolView slug={slug} name={name} />
-            : <ChatView slug={slug} name={name} msgs={msgs} self={gen.bubbleSelf} other={gen.bubbleOther} dark={dark} img={img} avatar={avatar} verified={verified} dateLabel={dateLabel} />}
+            : <ChatView slug={slug} name={name} msgs={msgs} self={gen.bubbleSelf} other={gen.bubbleOther} dark={dark} img={img} avatar={avatar} verified={verified} dateLabel={dateLabel} imgSide={imgSide} />}
           {wmOn && <div className="absolute bottom-1.5 right-1.5 bg-black/55 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md backdrop-blur-sm">fakie.</div>}
         </div>
         </BarCtx.Provider>
