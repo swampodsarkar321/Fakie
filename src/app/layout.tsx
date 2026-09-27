@@ -13,10 +13,13 @@ const jakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://fakie.app"),
   title: { default: "Fakie — Fake Chat & Screenshot Generator", template: "%s — Fakie" },
-  description: "Make realistic fake chats, posts, comments, stories, emails and notification screenshots. Free, no signup.",
-  keywords: ["fake chat generator", "fake whatsapp chat", "fake instagram post", "chat screenshot generator", "fake dm generator"],
-  openGraph: { type: "website", siteName: "Fakie", title: "Fakie — Fake Chat & Screenshot Generator", description: "Make realistic fake screenshots for any app. Free, no signup." },
-  twitter: { card: "summary_large_image", title: "Fakie — Fake Chat & Screenshot Generator", description: "Make realistic fake screenshots for any app. Free, no signup." },
+  description: "Make realistic fake chats, posts, comments, stories, emails and notification screenshots. Free fake WhatsApp chat, Instagram post, iMessage and TikTok generator — no signup.",
+  keywords: ["fake chat generator", "fake whatsapp chat", "fake whatsapp chat generator", "fake instagram post", "fake imessage generator", "chat screenshot generator", "fake dm generator", "fake tiktok comments", "fake x post generator"],
+  icons: { icon: "/favicon.svg", apple: "/icon-512.png" },
+  manifest: "/manifest.webmanifest",
+  themeColor: "#000000",
+  openGraph: { type: "website", siteName: "Fakie", title: "Fakie — Fake Chat & Screenshot Generator", description: "Make realistic fake screenshots for any app. Free fake WhatsApp, Instagram, iMessage, X and TikTok generator — no signup.", images: [{ url: "/og-cover.png", width: 1200, height: 630, alt: "Fakie — Fake chat & screenshot generator" }] },
+  twitter: { card: "summary_large_image", title: "Fakie — Fake Chat & Screenshot Generator", description: "Make realistic fake screenshots for any app. Free, no signup.", images: ["/og-cover.png"] },
   robots: { index: true, follow: true },
 };
 

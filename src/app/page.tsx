@@ -26,6 +26,22 @@ function Group({ title, items, icon, id }: { title: string; items: typeof chat; 
 }
 
 export default function Home() {
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      { "@type": "Question", name: "How do I make a fake WhatsApp chat screenshot?", acceptedAnswer: { "@type": "Answer", text: "Open the Fake WhatsApp Messages generator, type your messages, set the contact name, time and date, then download the screenshot as PNG. Free, no signup needed." } },
+      { "@type": "Question", name: "Is Fakie free to use?", acceptedAnswer: { "@type": "Answer", text: "Yes. Standard quality downloads are free with no ads. HD downloads without watermark unlock after 2 short ads." } },
+      { "@type": "Question", name: "Do I need to sign up to download screenshots?", acceptedAnswer: { "@type": "Answer", text: "No. Fakie works fully without an account — everything runs in your browser." } },
+      { "@type": "Question", name: "Which apps can I create fake screenshots for?", acceptedAnswer: { "@type": "Answer", text: "WhatsApp, Instagram, iMessage, Messenger, Telegram, TikTok, X, Snapchat, Discord, Facebook, ChatGPT, Gmail and 40+ more apps." } },
+    ],
+  };
+  const faqs = [
+    ["How do I make a fake WhatsApp chat screenshot?", "Open the Fake WhatsApp Messages generator, type your messages, set the contact name, time and date, then download the screenshot as PNG. Free, no signup needed."],
+    ["Is Fakie free to use?", "Yes. Standard quality downloads are free with no ads. HD downloads without watermark unlock after 2 short ads."],
+    ["Do I need to sign up to download screenshots?", "No. Fakie works fully without an account — everything runs in your browser and your images never leave your device."],
+    ["Which apps can I create fake screenshots for?", "WhatsApp, Instagram, iMessage, Messenger, Telegram, TikTok, X, Snapchat, Discord, Facebook, ChatGPT, Gmail and 40+ more apps."],
+  ];
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
@@ -39,6 +55,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white text-black">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
       <header className="border-b border-black/10 sticky top-0 bg-white/90 backdrop-blur z-10">
         <div className="max-w-6xl mx-auto flex items-center gap-6 px-6 py-3.5">
           <Link href="/" className="text-[22px] font-extrabold tracking-tight">fakie<span className="text-green-500">.</span></Link>
@@ -86,6 +103,28 @@ export default function Home() {
       <Group id="comments" title="Fake Comments & Stories" items={[...comments, ...stories]} icon={<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 21C7 16.5 3 13 3 8.8A4.8 4.8 0 0 1 7.8 4c1.7 0 3.2.9 4.2 2.3A4.8 4.8 0 0 1 16.2 4 4.8 4.8 0 0 1 21 8.8c0 4.2-4 7.7-9 12.2z"/></svg>} />
       <Group id="email" title="Fake Email & Notifications" items={[...email, ...notif]} icon={<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>} />
       <Group id="tools" title="Free tools" items={tools} icon={<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4L14.5 12 12 9.5z"/></svg>} />
+
+      <section className="max-w-6xl mx-auto px-6 py-10">
+        <h2 className="text-[24px] font-extrabold tracking-tight">How to make a fake chat screenshot</h2>
+        <ol className="mt-4 space-y-3 text-[15px] text-zinc-700 list-decimal list-inside">
+          <li><b>Pick a generator</b> — fake WhatsApp chat, Instagram post, iMessage, TikTok comments and 50+ more.</li>
+          <li><b>Type your messages</b> — set names, profile photos, tick marks, time and date for every bubble.</li>
+          <li><b>Download as PNG</b> — standard quality is free with no ads; HD without watermark after 2 short ads.</li>
+        </ol>
+        <p className="mt-4 text-[15px] text-zinc-600">Fakie is a free fake chat generator for pranks, memes, YouTube videos, storytelling and product mockups. Everything runs in your browser — no signup, no watermark on HD, your photos never leave your device.</p>
+      </section>
+
+      <section className="max-w-6xl mx-auto px-6 py-6">
+        <h2 className="text-[24px] font-extrabold tracking-tight">Frequently asked questions</h2>
+        <div className="mt-4 space-y-3">
+          {faqs.map(([q, a]) => (
+            <div key={q} className="border border-black/10 rounded-2xl px-5 py-4 bg-white">
+              <h3 className="font-bold text-[15px]">{q}</h3>
+              <p className="text-[14px] text-zinc-600 mt-1">{a}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <footer className="border-t border-black/10 mt-8">
         <div className="max-w-6xl mx-auto px-6 py-10 grid md:grid-cols-3 gap-8 text-[14px]">
