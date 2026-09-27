@@ -4,8 +4,10 @@ export interface Generator { slug: string; title: string; kind: GenKind; theme: 
 
 const C = (slug: string, title: string): Generator => ({ slug, title, kind: "chat", theme: "#0b141a", bubbleSelf: "#005c4b", bubbleOther: "#1f2c34" });
 
+const BRAND: Record<string, string> = { bluesky: "Bluesky", bumble: "Bumble", discord: "Discord", imessage: "iMessage", instagram: "Instagram", line: "LINE", linkedin: "LinkedIn", messenger: "Messenger", microsoftteams: "Microsoft Teams", msn: "MSN", onlyfans: "OnlyFans", reddit: "Reddit", signal: "Signal", slack: "Slack", snapchat: "Snapchat", techtext: "Text Message", telegram: "Telegram", tiktok: "TikTok", tinder: "Tinder", wechat: "WeChat", whatsapp: "WhatsApp", x: "X" };
+
 export const GENERATORS: Generator[] = [
-  ...["bluesky","bumble","discord","imessage","instagram","line","linkedin","messenger","microsoftTeams","msn","onlyfans","reddit","signal","slack","snapchat","techText","telegram","tiktok","tinder","wechat","whatsapp","x"].map((a) => C(`fake-${a}-messages`, `Fake ${a === "x" ? "X" : a[0].toUpperCase() + a.slice(1)} messages`)),
+  ...["bluesky","bumble","discord","imessage","instagram","line","linkedin","messenger","microsoftTeams","msn","onlyfans","reddit","signal","slack","snapchat","techText","telegram","tiktok","tinder","wechat","whatsapp","x"].map((a) => C(`fake-${a}-messages`, `Fake ${BRAND[a.toLowerCase()]} messages`)),
   { slug: "fake-fiverr-messages", title: "Fake Fiverr Messages", kind: "chat", theme: "#ffffff", bubbleSelf: "#fff", bubbleOther: "#fff" , pro: true },
   { slug: "fake-chatgpt-chat", title: "Fake ChatGPT chat", kind: "ai-chat", theme: "#212121", bubbleSelf: "#19c37d", bubbleOther: "#444654" },
   { slug: "fake-claude-chat", title: "Fake Claude chat", kind: "ai-chat", theme: "#f5f0e8", bubbleSelf: "#d97757", bubbleOther: "#fff" },
