@@ -21,6 +21,7 @@ export const metadata: Metadata = {
   openGraph: { type: "website", siteName: "Fakie", title: "Fakie — Fake Chat & Screenshot Generator", description: "Make realistic fake screenshots for any app. Free fake WhatsApp, Instagram, iMessage, X and TikTok generator — no signup.", images: [{ url: "/og-cover.png", width: 1200, height: 630, alt: "Fakie — Fake chat & screenshot generator" }] },
   twitter: { card: "summary_large_image", title: "Fakie — Fake Chat & Screenshot Generator", description: "Make realistic fake screenshots for any app. Free, no signup.", images: ["/og-cover.png"] },
   robots: { index: true, follow: true },
+  verification: { google: "fWxnJ6Q82zmDB9D1k1_m98hH6SrI2H253jcxt-5eTTY" },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
