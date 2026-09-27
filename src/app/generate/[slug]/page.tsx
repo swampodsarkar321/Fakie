@@ -701,6 +701,13 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
             : gen.kind === "tool" ? <ToolView slug={slug} name={name} />
             : <ChatView slug={slug} name={name} msgs={msgs} self={gen.bubbleSelf} other={gen.bubbleOther} dark={dark} img={img} avatar={avatar} verified={verified} dateLabel={dateLabel} imgSide={imgSide} />}
           {wmOn && <div className="absolute bottom-1.5 right-1.5 bg-black/55 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md backdrop-blur-sm">fakie.</div>}
+          {!dlBusy && (
+            <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden">
+              <div className="absolute -inset-[45%] flex flex-wrap content-center justify-center gap-x-10 gap-y-12 opacity-100" style={{ transform: "rotate(-24deg)", mixBlendMode: "difference" }}>
+                {Array.from({ length: 30 }).map((_, i) => (<span key={i} className="text-white/25 text-[20px] font-extrabold whitespace-nowrap">fakie.</span>))}
+              </div>
+            </div>
+          )}
         </div>
         </BarCtx.Provider>
         <p className="text-center text-[12px] text-zinc-400 mt-3">HD export • Watch 2 short ads</p>
