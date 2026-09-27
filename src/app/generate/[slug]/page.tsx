@@ -73,12 +73,12 @@ function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified, 
           <span className="text-[26px] font-extrabold tracking-tight">fiverr<span className="text-[#1dbf73]">.</span></span>
         </div>
         <div className="flex items-center gap-2 px-3 py-2 border-b border-black/10">
-          <span className="text-xl">←</span>
+          <span className="text-[#222325]"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M19 12H5m6-7l-7 7 7 7"/></svg></span>
           <div className="flex-1 text-center leading-tight">
             <div className="font-semibold text-[17px] underline underline-offset-2">{name}</div>
             <div className="text-[13px] text-zinc-500">4:51 AM local time</div>
           </div>
-          <span className="text-lg tracking-widest">···</span>
+          <span className="text-zinc-400"><svg width="18" height="18" viewBox="0 0 20 6" fill="currentColor"><circle cx="3" cy="3" r="1.6"/><circle cx="10" cy="3" r="1.6"/><circle cx="17" cy="3" r="1.6"/></svg></span>
         </div>
         <div className="flex justify-end pr-3 text-zinc-500"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/></svg></div>
         <div className="flex text-[16px] font-bold border-b border-black/10">
@@ -88,7 +88,7 @@ function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified, 
         <div className="px-4 py-3 space-y-5 min-h-[380px]">
           {msgs.map((m: Msg, i: number) => (
             <div key={i} className="flex gap-2.5">
-              <div className="w-9 h-9 rounded-full bg-[#d8dadf] shrink-0 flex items-center justify-center font-bold text-zinc-500 overflow-hidden">{m.me ? "Me"[0] : name[0]}</div>
+              <div className="w-9 h-9 rounded-full bg-[#d8dadf] shrink-0 overflow-hidden flex items-center justify-center">{avatar && !m.me ? <img src={avatar} className="w-full h-full object-cover" /> : <svg viewBox="0 0 24 24" className="w-[62%] h-[62%]" fill="#fff"><path d="M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9zm0 2c-4.4 0-8 2.2-8 5v1.5h16V19c0-2.8-3.6-5-8-5z"/></svg>}</div>
               <div className="flex-1">
                 <div className="flex items-center gap-2"><b className="text-[15px]">{m.me ? "Me" : name}</b><span className="ml-auto text-[13px] text-zinc-500">Sep 20, {m.time} PM</span><span className="text-zinc-400">···</span></div>
                 <p className="text-[15px] leading-[1.45] mt-1 text-[#222325]">{m.text}</p>
@@ -128,7 +128,7 @@ function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified, 
           {(() => { const last = [...msgs].reverse().find((m) => m.me && m.seen === "seen"); return last ? (<div className="flex justify-end items-center gap-1 text-[11px] text-zinc-500">{avatar ? <img src={avatar} className="w-3.5 h-3.5 rounded-full object-cover" alt="" /> : null}Seen {last.time}</div>) : null; })()}
           <ImgMsg />
         </div>
-        <div className="flex items-center gap-1 px-3 py-2 text-[#0084ff]"><span className="w-9 h-9 rounded-full bg-[#0084ff]/10 flex items-center justify-center font-bold text-lg">+</span><div className="flex-1 text-[16px] text-zinc-400 px-1">Aa</div><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0084ff" strokeWidth="1.8"><circle cx="12" cy="12" r="9"/><path d="M8.5 14.5c1 1.2 2.2 1.8 3.5 1.8s2.5-.6 3.5-1.8" strokeLinecap="round"/><circle cx="9" cy="9.5" r="1" fill="#0084ff" stroke="none"/><circle cx="15" cy="9.5" r="1" fill="#0084ff" stroke="none"/></svg><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0084ff" strokeWidth="1.8"><path d="M7 11v9H4a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h3zm2 9h8.6a2 2 0 0 0 2-1.6l1.4-6A2 2 0 0 0 19 10h-5l1-4.6a1.5 1.5 0 0 0-2.9-.7L9 11z"/></svg></div>
+        <div className="flex items-center gap-2 px-3 py-2 text-[#0084ff]"><span className="w-9 h-9 rounded-full bg-[#0084ff]/10 flex items-center justify-center font-bold text-lg shrink-0">+</span><div className="flex-1 text-[15px] text-zinc-400 border border-black/10 rounded-full px-3.5 py-2">Message…</div><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0084ff" strokeWidth="1.8"><circle cx="12" cy="12" r="9"/><path d="M8.5 14.5c1 1.2 2.2 1.8 3.5 1.8s2.5-.6 3.5-1.8" strokeLinecap="round"/><circle cx="9" cy="9.5" r="1" fill="#0084ff" stroke="none"/><circle cx="15" cy="9.5" r="1" fill="#0084ff" stroke="none"/></svg><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0084ff" strokeWidth="1.8"><path d="M7 11v9H4a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h3zm2 9h8.6a2 2 0 0 0 2-1.6l1.4-6A2 2 0 0 0 19 10h-5l1-4.6a1.5 1.5 0 0 0-2.9-.7L9 11z"/></svg></div>
       </div>
     );
   }
@@ -157,7 +157,7 @@ function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified, 
   );
   if (dc) return (
     <div className="bg-[#313338] text-zinc-100"><StatusBar notch={false} /><div className="px-4 py-2.5 font-bold border-b border-black/40 text-[16px] flex items-center gap-1.5"><span className="text-zinc-400 text-[20px] font-light">#</span> general</div>
-      <div className="p-4 space-y-4 min-h-[430px]">{msgs.map((m: Msg, i: number) => (<div key={i} className="flex gap-3"><Avatar name={m.me ? "You" : name} size="w-10 h-10" img={m.me ? null : avatar} /><div><div className="text-[14px]"><b>{m.me ? "you" : name}</b> <span className="text-[11px] text-zinc-400">Today at {m.time}</span></div><p className="text-[15px] text-zinc-200">{m.text}</p></div></div>))}</div>
+      <div className="p-4 space-y-4 min-h-[430px]">{msgs.map((m: Msg, i: number) => (<div key={i} className="flex gap-3"><Avatar name={m.me ? "You" : name} size="w-10 h-10" img={m.me ? null : avatar} /><div><div className="text-[14px]"><b>{m.me ? "You" : name}</b> <span className="text-[11px] text-zinc-400">Today at {m.time}</span></div><p className="text-[15px] text-zinc-200">{m.text}</p></div></div>))}</div>
       <div className="p-3"><div className="bg-[#383a40] rounded-lg px-4 py-2.5 text-[14px] text-zinc-400">Message #general</div></div>
     </div>
   );
@@ -181,7 +181,7 @@ function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified, 
   );
   if (slug.includes("tiktok-messages")) return (
     <div className="bg-white text-black">
-      <StatusBar dark={false} notch={false} /><div className="px-3.5 py-2.5 flex items-center gap-2.5 border-b border-black/10">{I.back("#000")}<Avatar name={name} /><b className="text-[16px]">{name}</b><span className="ml-auto text-xl">⚑</span></div>
+      <StatusBar dark={false} notch={false} /><div className="px-3.5 py-2.5 flex items-center gap-2.5 border-b border-black/10">{I.back("#000")}<Avatar name={name} /><b className="text-[16px]">{name}</b><span className="ml-auto text-zinc-500"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M5 3v18M5 4h12l-2.5 4L17 12H5"/></svg></span></div>
       <div className="p-3.5 space-y-2 min-h-[430px] bg-white">
         <div className="text-center text-[11px] text-zinc-400 bg-zinc-100 rounded-full px-3 py-1 w-fit mx-auto">Today</div>
         {msgs.map((m: Msg, i: number) => (<div key={i} className={`flex ${m.me ? "justify-end" : "justify-start"}`}><div className={`${m.me ? "bg-[#fe2c55] text-white" : "bg-[#f1f1f2] text-black"} px-3.5 py-2.5 rounded-[18px] max-w-[78%] text-[15px]`}>{m.text}</div></div>))}
@@ -192,10 +192,9 @@ function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified, 
   );
   if (slug.includes("snapchat")) return (
     <div className="bg-white text-black">
-      <StatusBar dark={false} notch={false} /><div className="px-3.5 py-2.5 flex items-center gap-2.5 bg-[#fffc00]">{I.back("#000")}<Avatar name={name} /><div className="flex-1 leading-tight"><b className="text-[16px]">{name}</b><div className="text-[12px] flex items-center gap-1">🔥 128 streak • Best friends</div></div></div>
+      <StatusBar dark={false} notch={false} /><div className="px-3.5 py-2.5 flex items-center gap-2.5 bg-[#fffc00]">{I.back("#000")}<Avatar name={name} /><div className="flex-1 leading-tight"><b className="text-[16px]">{name}</b><div className="text-[12px] flex items-center gap-1"><svg width="13" height="15" viewBox="0 0 24 28" fill="#ff7a00"><path d="M13.5 1C10 7 6 10 6 16a6 6 0 0 0 12 0c0-2-1-3.5-2-5-.5 1.5-1.5 2.5-3 3 .5-4-.5-9-2.5-13z"/></svg>128 streak • Best friends</div></div></div>
       <div className="p-3.5 space-y-2.5 min-h-[420px]">
         {msgs.map((m: Msg, i: number) => (<div key={i} className={`flex ${m.me ? "justify-end" : "justify-start"}`}><div className={`${m.me ? "bg-[#fffc00]" : "bg-[#f0f0f0]"} px-3.5 py-2 rounded-[18px] max-w-[78%] text-[15px] border ${m.me ? "border-black/10" : "border-black/5"}`}>{m.text}</div></div>))}
-        <div className="border border-dashed border-black/20 rounded-2xl p-3 text-center text-[13px] text-zinc-500">Saved in chat • Screenshots notify</div>
         <ImgMsg />
       </div>
       <div className="p-3 flex gap-2 items-center border-t border-black/10"><div className="flex-1 border border-black/15 rounded-full px-4 py-2.5 text-[14px] text-zinc-400">Send a chat</div></div>
@@ -205,7 +204,7 @@ function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified, 
     <div className="bg-white text-black">
       <StatusBar dark={false} notch={false} /><div className="px-3.5 py-2.5 flex items-center gap-2.5 bg-[#3a76f0] text-white">{I.back("#fff")}<Avatar name={name} /><div className="flex-1 leading-tight"><b className="text-[16px]">{name}</b><div className="text-[12px] opacity-80">Active now • Disappearing: 1 week</div></div></div>
       <div className="p-3.5 space-y-2 min-h-[430px] bg-[#e9e9eb]/40">
-        <div className="text-center text-[11px] text-zinc-500 bg-white rounded-lg px-3 py-1.5 w-fit mx-auto shadow-sm">🔒 End-to-end encrypted • Safety numbers verified</div>
+        <div className="text-center text-[11px] text-zinc-500 bg-white rounded-lg px-3 py-1.5 w-fit mx-auto shadow-sm flex items-center gap-1">{I.lock} End-to-end encrypted • Safety numbers verified</div>
         {msgs.map((m: Msg, i: number) => (<div key={i} className={`flex ${m.me ? "justify-end" : "justify-start"}`}><div className={`${m.me ? "bg-[#3a76f0] text-white" : "bg-white text-black shadow-sm"} px-3.5 py-2.5 rounded-[18px] max-w-[78%] text-[15px]`}>{m.text}<span className="text-[10px] opacity-60 ml-1.5">{m.time}</span></div></div>))}
         <ImgMsg />
       </div>
@@ -217,14 +216,14 @@ function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified, 
       <div className="px-4 py-3 bg-[#3f0e40] text-white flex items-center gap-2"><b className="text-[16px]">{name}&apos;s workspace ▾</b><span className="ml-auto w-8 h-8 rounded-lg bg-white/20" /></div>
       <div className="px-4 py-2 border-b border-black/10 font-bold text-[15px]"># general <span className="font-normal text-zinc-500 text-[13px]">• 248 members</span></div>
       <div className="p-4 space-y-4 min-h-[400px]">
-        {msgs.map((m: Msg, i: number) => (<div key={i} className="flex gap-2.5"><Avatar name={m.me ? "You" : name} size="w-9 h-9" /><div><div className="text-[14px]"><b>{m.me ? "You" : name}</b> <span className="text-[12px] text-zinc-500">{m.time}</span></div><p className="text-[15px]">{m.text}</p><div className="text-[13px] text-zinc-500 mt-0.5">💬 3 replies • 👍 5</div></div></div>))}
+        {msgs.map((m: Msg, i: number) => (<div key={i} className="flex gap-2.5"><Avatar name={m.me ? "You" : name} size="w-9 h-9" /><div><div className="text-[14px]"><b>{m.me ? "You" : name}</b> <span className="text-[12px] text-zinc-500">{m.time}</span></div><p className="text-[15px]">{m.text}</p><div className="text-[13px] text-zinc-500 mt-0.5 flex items-center gap-1.5"><span className="flex items-center gap-1"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg> 3 replies</span>•<span className="flex items-center gap-1"><svg width="13" height="13" viewBox="0 0 24 24" fill="#f5b301"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg> 5</span></div></div></div>))}
       </div>
       <div className="p-3 border border-black/15 rounded-xl m-3 text-[14px] text-zinc-400">Message #general • **bold** supported</div>
     </div>
   );
   if (slug.includes("reddit") && slug.includes("message") && !slug.includes("comment")) return (
     <div className="bg-white text-black">
-      <StatusBar dark={false} notch={false} /><div className="px-3.5 py-2.5 flex items-center gap-2.5 border-b border-black/10"><Avatar name={name} /><div className="flex-1 leading-tight"><b className="text-[15px]">u/{name.toLowerCase().replace(/ /g, "")}</b><div className="text-[12px] text-green-600">● Online now</div></div></div>
+      <StatusBar dark={false} notch={false} /><div className="px-3.5 py-2.5 flex items-center gap-2.5 border-b border-black/10"><Avatar name={name} /><div className="flex-1 leading-tight"><b className="text-[15px]">u/{name.toLowerCase().replace(/ /g, "")}</b><div className="text-[12px] text-green-600 flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />Online now</div></div></div>
       <div className="p-3.5 space-y-2 min-h-[430px] bg-[#f6f7f8]">
         {msgs.map((m: Msg, i: number) => (<div key={i} className={`flex ${m.me ? "justify-end" : "justify-start"}`}><div className={`${m.me ? "bg-[#0079d3] text-white" : "bg-white text-black shadow-sm"} px-3.5 py-2.5 rounded-[18px] max-w-[78%] text-[15px]`}>{m.text}</div></div>))}
       </div>
@@ -248,8 +247,9 @@ function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified, 
     onlyfans: { bg: "#fff", head: "#fff", sub: "OnlyFans", me: "#00aff0", them: "#f2f2f2", tc: "#fff", tmc: "#111", label: "OnlyFans" },
     msn: { bg: "#d7e8f7", head: "#0a246a", sub: "MSN • online", me: "#fff", them: "#fff", tc: "#000", tmc: "#000", label: "MSN" },
     microsoftteams: { bg: "#f5f5f5", head: "#4b53bc", sub: "Teams Chat", me: "#4b53bc", them: "#fff", tc: "#fff", tmc: "#111", label: "Teams" },
+    techtext: { bg: "#fff", head: "#f6f6f6", sub: "Text Message • SMS", me: "#0a84ff", them: "#e9e9eb", tc: "#fff", tmc: "#111", label: "SMS" },
   };
-  const key = Object.keys(APP).find((k) => slug.includes(k)) ?? "";
+  const key = Object.keys(APP).find((k) => slug.replace(/^fake-/, "").split("-")[0].toLowerCase() === k.toLowerCase()) ?? "";
   if (key) {
     const a = APP[key];
     return (
@@ -260,11 +260,15 @@ function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified, 
           <div className="flex gap-3 opacity-70">{I.phone("#888")}{I.video("#888")}</div>
         </div>
         <div className="p-3 space-y-2 min-h-[430px]">
-          <div className="text-center text-[11px] opacity-50">{dateLabel || `Today ${a.label}`} • end-to-end encrypted</div>
+          <div className="text-center text-[11px] opacity-50">{dateLabel}</div>
           {msgs.map((m: Msg, i: number) => (
             <div key={i} className={`flex items-end gap-1.5 ${m.me ? "justify-end" : "justify-start"}`}>
               {!m.me && <Avatar name={name} size="w-7 h-7" img={avatar} />}
-              <div style={{ background: m.me ? a.me : a.them, color: m.me ? a.tc : a.tmc }} className="px-3 py-2 rounded-2xl max-w-[75%] text-[14.5px] shadow-sm">{m.text}<span className="text-[10px] opacity-60 ml-1.5">{m.time}{m.me && m.seen === "seen" ? " • Seen" : m.me && m.seen === "delivered" ? " • Delivered" : ""}</span></div>
+              <div className="max-w-[75%]">
+                <div style={{ background: m.me ? a.me : a.them, color: m.me ? a.tc : a.tmc }} className="px-3 py-2 rounded-2xl text-[14.5px] shadow-sm">{m.text}<span className="text-[10px] opacity-60 ml-1.5">{m.time}</span></div>
+                {m.me && m.seen === "seen" && <div className="text-right text-[11px] opacity-50 mt-0.5 pr-1">Seen {m.time}</div>}
+                {m.me && m.seen === "delivered" && <div className="text-right text-[11px] opacity-50 mt-0.5 pr-1">Delivered</div>}
+              </div>
             </div>))}
           <ImgMsg />
         </div>
@@ -290,21 +294,21 @@ function AIView({ slug, msgs }: any) {
         {msgs.map((m: Msg, i: number) => m.me ? (
           <div key={i} className="flex justify-end"><div className="bg-[#e9eef6] px-4 py-2.5 rounded-[20px] max-w-[85%] text-[15px]">{m.text}</div></div>
         ) : (
-          <div key={i} className="text-[15px] leading-relaxed"><span className="font-bold">Key answer: </span>{m.text}<div className="mt-2 h-20 rounded-2xl bg-gradient-to-r from-[#e8f0fe] via-[#f3e8fd] to-[#fce8e6]" /></div>
+          <div key={i} className="text-[15px] leading-relaxed">{m.text}</div>
         ))}
       </div>
-      <div className="p-3"><div className="rounded-full border border-black/10 bg-white shadow-lg px-4 py-3 text-[14px] text-zinc-400 flex items-center gap-2">+ Ask Gemini<span className="ml-auto flex gap-2"><span className="w-8 h-8 rounded-full bg-[#e8f0fe] flex items-center justify-center">🎙</span><span className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center">✦</span></span></div></div>
+      <div className="p-3"><div className="rounded-full border border-black/10 bg-white shadow-lg px-4 py-3 text-[14px] text-zinc-400 flex items-center gap-2">+ Ask Gemini<span className="ml-auto flex gap-2"><span className="w-8 h-8 rounded-full bg-[#e8f0fe] flex items-center justify-center"><svg width="15" height="15" viewBox="0 0 24 24" fill="#0b57d0"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v4" stroke="#0b57d0" strokeWidth="2" fill="none" strokeLinecap="round"/></svg></span><span className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.2 7.8L22 12l-7.8 2.2L12 22l-2.2-7.8L2 12l7.8-2.2z"/></svg></span></span></div></div>
     </div>
   );
   // Claude 2026 — warm cream + coral, sessions sidebar feel
   if (isClaude) return (
     <div className="bg-[#f0eee6] text-[#2b2620]">
-      <div className="px-4 py-3 flex items-center gap-2 border-b border-black/10"><div className="w-6 h-6 rounded-md bg-[#d97757] text-white text-[13px] flex items-center justify-center font-bold">✳</div><b className="text-[15px]">Claude</b><span className="text-[12px] text-zinc-500">Sonnet 5 ▾</span></div>
+      <div className="px-4 py-3 flex items-center gap-2 border-b border-black/10"><div className="w-6 h-6 rounded-md bg-[#d97757] flex items-center justify-center font-bold"><svg width="13" height="13" viewBox="0 0 24 24" fill="#fff"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8zM19 15l.9 3.1L23 19l-3.1.9L19 23l-.9-3.1L15 19l3.1-.9z"/></svg></div><b className="text-[15px]">Claude</b><span className="text-[12px] text-zinc-500">Sonnet 5 ▾</span></div>
       <div className="p-4 space-y-5 min-h-[420px]">
         {msgs.map((m: Msg, i: number) => m.me ? (
           <div key={i} className="bg-white rounded-2xl px-4 py-3 text-[15px] shadow-sm ml-8">{m.text}</div>
         ) : (
-          <div key={i} className="flex gap-2.5"><div className="w-7 h-7 rounded-md bg-[#d97757] text-white text-[12px] flex items-center justify-center shrink-0 font-bold">✳</div><p className="text-[15px] leading-relaxed">{m.text}</p></div>
+          <div key={i} className="flex gap-2.5"><div className="w-7 h-7 rounded-md bg-[#d97757] flex items-center justify-center shrink-0"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z"/></svg></div><p className="text-[15px] leading-relaxed">{m.text}</p></div>
         ))}
       </div>
       <div className="p-3"><div className="bg-white border border-black/10 rounded-2xl px-4 py-3 text-[14px] text-zinc-400 shadow-sm">Reply to Claude…</div></div>
@@ -358,7 +362,7 @@ function PostView({ slug, name, msgs, img, avatar, verified }: any) {
   const x = slug.includes("-x-");
   const txt = msgs[0]?.text || "Just figuring out Mockly!";
   const uname = name.toLowerCase().replace(/ /g, "");
-  const Pic = ({ h = "h-48" }: { h?: string }) => img ? <img src={img} className={`${h} w-full mt-2.5 rounded-2xl object-cover`} /> : <div className={`${h} mt-2.5 rounded-2xl bg-[#1d1d1f]`} />;
+  const Pic = ({ h = "h-48" }: { h?: string }) => img ? <img src={img} className={`${h} w-full mt-2.5 rounded-2xl object-cover`} /> : null;
   if (x) return (<div className="bg-black text-white p-4"><div className="flex gap-2.5"><Avatar name={name} size="w-10 h-10" img={avatar} /><div className="flex-1"><div className="flex items-center gap-1"><b className="text-[15px]">{name}</b>{verified && <Verified />}<span className="text-zinc-500 text-[14px]"> @{uname} · 2h</span></div><p className="text-[15px] mt-0.5">{txt}</p><Pic /><div className="flex justify-between text-zinc-500 mt-3 max-w-[300px]"><span className="flex items-center gap-1">{I.comment}<span className="text-[13px]">342</span></span><span className="flex items-center gap-1">{I.repost}<span className="text-[13px]">1.2K</span></span><span className="flex items-center gap-1">{I.heart()}<span className="text-[13px]">12K</span></span><span className="flex items-center gap-1">{I.chart}<span className="text-[13px]">2M</span></span></div></div></div></div>);
   if (slug.includes("instagram-post")) return (
     <div className="bg-white text-black">
@@ -379,22 +383,22 @@ function PostView({ slug, name, msgs, img, avatar, verified }: any) {
       <div className="flex justify-around border-t border-black/10 pt-2 text-[13px] font-semibold text-zinc-600"><span className="flex items-center gap-1.5">{I.thumbUp} Like</span><span className="flex items-center gap-1.5">{I.comment} Comment</span><span className="flex items-center gap-1.5">{I.repost} Repost</span><span className="flex items-center gap-1.5">{I.share} Send</span></div>
     </div></div>);
   if (slug.includes("tiktok-post")) return (
-    <div className="bg-black text-white"><div className="aspect-[9/12] bg-[#161823] relative flex items-end overflow-hidden">{img && <img src={img} className="absolute inset-0 w-full h-full object-cover" />}<div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" /><div className="absolute right-2 bottom-20 space-y-4 text-center text-[11px]"><div><div className="w-11 h-11 rounded-full mx-auto overflow-hidden">{avatar ? <img src={avatar} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-zinc-600" />}</div>+</div><div>{I.heart("none", "#fff")}<br />245K</div><div>{I.comment}<br />3.2K</div><div>{I.share}<br />Share</div></div><div className="p-3"><b className="flex items-center gap-1">@{uname}{verified && <Verified size={13} />}</b><p className="text-[14px] mt-1">{txt}</p><div className="text-[13px] mt-1">♫ original sound - {uname}</div></div></div></div>);
+    <div className="bg-black text-white"><div className="aspect-[9/12] bg-[#161823] relative flex items-end overflow-hidden">{img && <img src={img} className="absolute inset-0 w-full h-full object-cover" />}<div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" /><div className="absolute right-2 bottom-20 space-y-4 text-center text-[11px]"><div><div className="w-11 h-11 rounded-full mx-auto overflow-hidden">{avatar ? <img src={avatar} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-zinc-600" />}</div>+</div><div>{I.heart("none", "#fff")}<br />245K</div><div>{I.comment}<br />3.2K</div><div>{I.share}<br />Share</div></div><div className="p-3"><b className="flex items-center gap-1">@{uname}{verified && <Verified size={13} />}</b><p className="text-[14px] mt-1">{txt}</p><div className="text-[13px] mt-1 flex items-center gap-1"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18V6l10-2v11"/><circle cx="7" cy="18" r="2.5"/><circle cx="17" cy="15" r="2.5"/></svg> original sound - {uname}</div></div></div></div>);
   if (slug.includes("bluesky")) return (
     <div className="bg-white text-black p-4"><div className="flex gap-2.5"><Avatar name={name} size="w-11 h-11" img={avatar} /><div><b className="text-[15px] flex items-center gap-1">{name}{verified && <Verified size={13} />}</b><div className="text-[14px] text-zinc-500">@{uname}.bsky.social · 2h</div><p className="text-[15px] mt-1">{txt}</p><div className="flex justify-between max-w-[280px] mt-2.5 text-zinc-500"><span className="flex items-center gap-1 text-[13px]">{I.comment} 45</span><span className="flex items-center gap-1 text-[13px]">{I.repost} 120</span><span className="flex items-center gap-1 text-[13px]">{I.heart()} 890</span></div></div></div></div>);
   if (slug.includes("pinterest")) return (
     <div className="bg-white text-black p-3"><div className="rounded-2xl overflow-hidden">{img ? <img src={img} className="w-full h-72 object-cover" /> : <div className="h-72 bg-gradient-to-b from-red-100 to-red-300" />}</div><div className="flex items-center gap-2 mt-2.5"><Avatar name={name} size="w-8 h-8" img={avatar} /><b className="text-[14px] flex items-center gap-1">{name}{verified && <Verified size={12} />}</b><span className="ml-auto bg-[#e60023] text-white text-[14px] font-semibold px-4 py-2 rounded-full">Save</span></div><div className="font-semibold text-[15px] mt-2">{txt}</div><div className="text-[13px] text-zinc-500">1.2k saves · 45 comments</div></div>);
   return (<div className="bg-white text-[#050505] font-[Helvetica,Arial,sans-serif]">
     <div className="flex gap-2.5 px-3 pt-3 items-start">
-      {avatar ? <img src={avatar} className="w-10 h-10 rounded-full object-cover shrink-0" alt="" /> : <div className="w-10 h-10 rounded-full bg-[#d8dadf] flex items-center justify-center font-bold text-zinc-600 shrink-0">{name[0]?.toUpperCase()}</div>}
+      {avatar ? <img src={avatar} className="w-10 h-10 rounded-full object-cover shrink-0" alt="" /> : <div className="w-10 h-10 rounded-full bg-[#c9cdd3] flex items-center justify-center shrink-0 overflow-hidden"><svg viewBox="0 0 24 24" className="w-[62%] h-[62%]" fill="#fff"><path d="M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9zm0 2c-4.4 0-8 2.2-8 5v1.5h16V19c0-2.8-3.6-5-8-5z"/></svg></div>}
       <div className="leading-tight flex-1">
         <div className="flex items-center gap-1"><b className="text-[15px] font-semibold">{name}</b>{verified ? <Verified size={14} /> : <svg width="14" height="14" viewBox="0 0 24 24" fill="#0084ff"><circle cx="12" cy="12" r="10"/><path d="M10 14.5l-2.5-2.5 1.4-1.4 1.1 1.1 4.1-4.1 1.4 1.4z" fill="#fff"/></svg>}</div>
         <div className="text-[13px] text-[#65676b] flex items-center gap-1">2 hrs · <svg width="13" height="13" viewBox="0 0 24 24" fill="#65676b"><circle cx="12" cy="12" r="9" fill="none" stroke="#65676b" strokeWidth="1.8"/><path d="M3 12h18M12 3c3 3.5 3 14 0 18M12 3c-3 3.5-3 14 0 18" stroke="#65676b" strokeWidth="1.5" fill="none"/></svg></div>
       </div>
-      <div className="flex items-center gap-4 text-[#65676b] pr-1"><span className="text-xl leading-none">···</span><span className="text-xl leading-none">✕</span></div>
+      <div className="flex items-center gap-4 text-[#65676b] pr-1"><svg width="18" height="18" viewBox="0 0 20 6" fill="currentColor"><circle cx="3" cy="3" r="1.6"/><circle cx="10" cy="3" r="1.6"/><circle cx="17" cy="3" r="1.6"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg></div>
     </div>
     <p className="px-3 pt-2 pb-2.5 text-[15px] leading-[1.35]">{msgs[0]?.text || "Just figuring out Mockly!"}</p>
-    <div className="bg-[#e4e6eb] h-[300px] w-full flex items-center justify-center overflow-hidden">{img ? <img src={img} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-gradient-to-br from-slate-200 to-slate-300" />}</div>
+    {img && <div className="bg-[#e4e6eb] w-full flex items-center justify-center overflow-hidden"><img src={img} className="w-full h-full object-cover" /></div>}
     <div className="flex justify-between items-center px-3 py-2.5 text-[14px] text-[#65676b]">
       <span className="flex items-center gap-1.5"><span className="flex -space-x-1"><span className="w-[18px] h-[18px] rounded-full bg-[#0084ff] border-2 border-white flex items-center justify-center"><svg width="10" height="10" viewBox="0 0 24 24" fill="#fff"><path d="M7 11v9H4a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h3zm2 9h8.6a2 2 0 0 0 2-1.6l1.4-6A2 2 0 0 0 19 10h-5l1-4.6a1.5 1.5 0 0 0-2.9-.7L9 11z"/></svg></span><span className="w-[18px] h-[18px] rounded-full bg-[#ff3040] border-2 border-white flex items-center justify-center"><svg width="10" height="10" viewBox="0 0 24 24" fill="#fff"><path d="M12 21C7 16.5 3 13 3 8.8A4.8 4.8 0 0 1 7.8 4c1.7 0 3.2.9 4.2 2.3A4.8 4.8 0 0 1 16.2 4 4.8 4.8 0 0 1 21 8.8c0 4.2-4 7.7-9 12.2z"/></svg></span></span> 4.2K</span>
       <span>380 comments · 120 shares</span>
@@ -410,24 +414,28 @@ function PostView({ slug, name, msgs, img, avatar, verified }: any) {
 
 function CommentsView({ slug, msgs }: any) {
   const yt = slug.includes("youtube");
-  if (slug.includes("reddit")) return (<div className="bg-[#dae0e6] p-3"><div className="bg-white rounded p-3 text-[14px]"><b>r/funny • Posted by u/op • 5h ago</b><p className="mt-1">This is the post title here</p></div><div className="space-y-2 mt-2">{msgs.map((m: Msg, i: number) => (<div key={i} className="bg-white rounded p-3 flex gap-2"><div className="flex flex-col items-center text-zinc-400 text-xs">▲<b className="text-black">{120 + i * 37}</b>▼</div><div><div className="text-[12px] text-zinc-500">u/user{i} • {i + 2}h ago</div><p className="text-[14px]">{m.text}</p><div className="text-[12px] text-zinc-500 mt-1 font-semibold">Reply Share Award</div></div></div>))}</div></div>);
-  if (slug.includes("instagram-comments") || slug.includes("threads-comments")) return (<div className="bg-white text-black p-4"><div className="space-y-4">{msgs.map((m: Msg, i: number) => (<div key={i} className="flex gap-2.5"><Avatar name={"u" + i} size="w-9 h-9" /><div className="flex-1 text-[14px]"><b>user{i}</b> {m.text}<div className="text-[12px] text-zinc-500 mt-1 flex gap-3">2h <span>Reply</span></div></div><div className="text-zinc-300">{I.heart()}</div></div>))}</div></div>);
-  if (slug.includes("x-comments")) return (<div className="bg-black text-white p-4 space-y-4">{msgs.map((m: Msg, i: number) => (<div key={i} className="flex gap-2.5 border-b border-white/10 pb-3"><Avatar name={"u" + i} size="w-9 h-9" /><div><div className="text-[14px]"><b>User{i}</b> <span className="text-zinc-500">@user{i} · 2h</span></div><p className="text-[15px]">{m.text}</p><div className="flex gap-6 text-zinc-500 text-[13px] mt-2"><span className="flex items-center gap-1">{I.comment} 12</span><span className="flex items-center gap-1">{I.repost} 4</span><span className="flex items-center gap-1">{I.heart()} 89</span></div></div></div>))}</div>);
-  if (slug.includes("facebook-comments")) return (<div className="bg-white text-black p-4 space-y-4">{msgs.map((m: Msg, i: number) => (<div key={i} className="flex gap-2.5"><Avatar name={"u" + i} size="w-9 h-9" /><div className="flex-1"><div className="bg-[#f0f2f5] rounded-2xl px-3 py-2"><b className="text-[13px]">User {i}</b><p className="text-[14px]">{m.text}</p></div><div className="text-[12px] text-zinc-500 mt-1 ml-3 flex gap-3 font-semibold"><span>Like</span><span>Reply</span><span>2h</span></div></div></div>))}</div>);
-  if (slug.includes("linkedin-comments")) return (<div className="bg-[#f4f2ee] p-3 space-y-2">{msgs.map((m: Msg, i: number) => (<div key={i} className="bg-white rounded-lg p-3 flex gap-2.5"><Avatar name={"u" + i} size="w-11 h-11" /><div><b className="text-[14px]">Professional {i}</b><div className="text-[12px] text-zinc-500">CEO @ Company • 2h</div><p className="text-[14px] mt-1">{m.text}</p><div className="text-[13px] text-zinc-500 mt-1.5 font-semibold">Like • 💬 {5 + i} • Repost</div></div></div>))}</div>);
-  if (slug.includes("tiktok-comments")) return (<div className="bg-white text-black p-4"><div className="font-bold text-[15px] mb-1">{(320 + msgs.length * 17)} comments</div><div className="space-y-4 mt-3">{msgs.map((m: Msg, i: number) => (<div key={i} className="flex gap-2.5"><Avatar name={"u" + i} size="w-10 h-10" /><div className="flex-1"><b className="text-[14px]">user{i} • 2h</b><p className="text-[14px]">{m.text}</p><div className="text-[12px] text-zinc-500 mt-1 flex gap-4"><span>Reply</span><span>View replies ({3 + i})</span></div></div><div className="text-center text-zinc-400 text-[11px]">{I.heart()}<br />{120 + i * 37}</div></div>))}</div></div>);
-  if (slug.includes("threads-comments")) return (<div className="bg-white text-black p-4 space-y-4">{msgs.map((m: Msg, i: number) => (<div key={i} className="flex gap-2.5"><Avatar name={"u" + i} size="w-9 h-9" /><div className="flex-1 text-[14px]"><b>user{i}</b> <span className="text-zinc-500">2h</span><p>{m.text}</p><div className="flex gap-4 mt-1.5 text-zinc-500"><span>{I.heart()}</span><span>{I.comment}</span><span>{I.repost}</span></div></div></div>))}</div>);
+  const CN = ["Nusrat Jahan", "Tanvir Hasan", "Mim Akter", "Arif Chowdhury", "Sadia Rahman", "Fahim Uddin", "Priya Das", "Rafi Ahmed"];
+  const ROLES = ["CEO @ TechCorp", "Designer @ Studio", "Student @ DU", "Developer @ Startup", "Marketer @ Brand", "Teacher @ School"];
+  const cn = (i: number) => CN[i % CN.length];
+  const handle = (i: number) => cn(i).toLowerCase().replace(/ /g, "") + (i >= CN.length ? i : "");
+  if (slug.includes("reddit")) return (<div className="bg-[#dae0e6] p-3"><div className="bg-white rounded p-3 text-[14px]"><b>r/funny • Posted by u/op • 5h ago</b><p className="mt-1">This is the post title here</p></div><div className="space-y-2 mt-2">{msgs.map((m: Msg, i: number) => (<div key={i} className="bg-white rounded p-3 flex gap-2"><div className="flex flex-col items-center text-zinc-400 text-xs"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 14l6-6 6 6"/></svg><b className="text-black">{120 + i * 37}</b><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 10l6 6 6-6"/></svg></div><div><div className="text-[12px] text-zinc-500">u/{handle(i)} • {i + 2}h ago</div><p className="text-[14px]">{m.text}</p><div className="text-[12px] text-zinc-500 mt-1 font-semibold">Reply Share Award</div></div></div>))}</div></div>);
+  if (slug.includes("instagram-comments") || slug.includes("threads-comments")) return (<div className="bg-white text-black p-4"><div className="space-y-4">{msgs.map((m: Msg, i: number) => (<div key={i} className="flex gap-2.5"><Avatar name={cn(i)} size="w-9 h-9" /><div className="flex-1 text-[14px]"><b>{handle(i)}</b> {m.text}<div className="text-[12px] text-zinc-500 mt-1 flex gap-3">2h <span>Reply</span></div></div><div className="text-zinc-300">{I.heart()}</div></div>))}</div></div>);
+  if (slug.includes("x-comments")) return (<div className="bg-black text-white p-4 space-y-4">{msgs.map((m: Msg, i: number) => (<div key={i} className="flex gap-2.5 border-b border-white/10 pb-3"><Avatar name={cn(i)} size="w-9 h-9" /><div><div className="text-[14px]"><b>{cn(i)}</b> <span className="text-zinc-500">@{handle(i)} · 2h</span></div><p className="text-[15px]">{m.text}</p><div className="flex gap-6 text-zinc-500 text-[13px] mt-2"><span className="flex items-center gap-1">{I.comment} 12</span><span className="flex items-center gap-1">{I.repost} 4</span><span className="flex items-center gap-1">{I.heart()} 89</span></div></div></div>))}</div>);
+  if (slug.includes("facebook-comments")) return (<div className="bg-white text-black p-4 space-y-4">{msgs.map((m: Msg, i: number) => (<div key={i} className="flex gap-2.5"><Avatar name={cn(i)} size="w-9 h-9" /><div className="flex-1"><div className="bg-[#f0f2f5] rounded-2xl px-3 py-2"><b className="text-[13px]">{cn(i)}</b><p className="text-[14px]">{m.text}</p></div><div className="text-[12px] text-zinc-500 mt-1 ml-3 flex gap-3 font-semibold"><span>Like</span><span>Reply</span><span>2h</span></div></div></div>))}</div>);
+  if (slug.includes("linkedin-comments")) return (<div className="bg-[#f4f2ee] p-3 space-y-2">{msgs.map((m: Msg, i: number) => (<div key={i} className="bg-white rounded-lg p-3 flex gap-2.5"><Avatar name={cn(i)} size="w-11 h-11" /><div><b className="text-[14px]">{cn(i)}</b><div className="text-[12px] text-zinc-500">{ROLES[i % ROLES.length]} • 2h</div><p className="text-[14px] mt-1">{m.text}</p><div className="text-[13px] text-zinc-500 mt-1.5 font-semibold flex items-center gap-1.5">Like • <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg> {5 + i} • Repost</div></div></div>))}</div>);
+  if (slug.includes("tiktok-comments")) return (<div className="bg-white text-black p-4"><div className="font-bold text-[15px] mb-1">{(320 + msgs.length * 17)} comments</div><div className="space-y-4 mt-3">{msgs.map((m: Msg, i: number) => (<div key={i} className="flex gap-2.5"><Avatar name={cn(i)} size="w-10 h-10" /><div className="flex-1"><b className="text-[14px]">{handle(i)} • 2h</b><p className="text-[14px]">{m.text}</p><div className="text-[12px] text-zinc-500 mt-1 flex gap-4"><span>Reply</span><span>View replies ({3 + i})</span></div></div><div className="text-center text-zinc-400 text-[11px]">{I.heart()}<br />{120 + i * 37}</div></div>))}</div></div>);
+  if (slug.includes("threads-comments")) return (<div className="bg-white text-black p-4 space-y-4">{msgs.map((m: Msg, i: number) => (<div key={i} className="flex gap-2.5"><Avatar name={cn(i)} size="w-9 h-9" /><div className="flex-1 text-[14px]"><b>{handle(i)}</b> <span className="text-zinc-500">2h</span><p>{m.text}</p><div className="flex gap-4 mt-1.5 text-zinc-500"><span>{I.heart()}</span><span>{I.comment}</span><span>{I.repost}</span></div></div></div>))}</div>);
   return (<div className={yt ? "bg-[#0f0f0f] text-white p-4" : "bg-white text-black p-4"}>
     {yt && <div><div className="h-44 rounded-xl bg-gradient-to-br from-[#212121] to-black mb-2 flex items-center justify-center relative">{I.play}<span className="absolute bottom-2 right-2 bg-black text-white text-[11px] px-1.5 py-0.5 rounded">12:48</span></div><div className="font-bold text-[14px]">I Tested 2026's Best Fake Apps…</div><div className="text-[12px] opacity-60 mb-3">2.1M views • 3 days ago</div></div>}
     <div className="font-bold mb-3 text-[14px] flex items-center gap-4">{msgs.length} Comments <span className="font-normal opacity-60">Sort by</span></div>
-    <div className="space-y-4">{msgs.map((m: Msg, i: number) => (<div key={i} className="flex gap-2.5"><Avatar name={"u" + i} size="w-8 h-8" /><div><div className="text-[12px] opacity-60">@user{i} · 3h ago</div><p className="text-[14px] mt-0.5">{m.text}</p><div className="flex items-center gap-2 text-[12px] opacity-60 mt-1.5">{I.thumbUp} {120 + i * 37} {I.reply} Reply</div></div></div>))}</div>
+    <div className="space-y-4">{msgs.map((m: Msg, i: number) => (<div key={i} className="flex gap-2.5"><Avatar name={cn(i)} size="w-8 h-8" /><div><div className="text-[12px] opacity-60">@{handle(i)} · 3h ago</div><p className="text-[14px] mt-0.5">{m.text}</p><div className="flex items-center gap-2 text-[12px] opacity-60 mt-1.5">{I.thumbUp} {120 + i * 37} {I.reply} Reply</div></div></div>))}</div>
   </div>);
 }
 
 function StoryView({ name, msgs, slug }: any) {
   const snap = (slug || "").includes("snapchat");
   if (snap) return (<div className="relative h-[600px] bg-black text-white"><div className="h-[420px] bg-[#2a2a2a] flex items-center justify-center text-center px-6 text-[20px] font-semibold">{msgs[0]?.text}</div><div className="flex items-center gap-2 px-3 py-2.5"><Avatar name={name} size="w-9 h-9" /><b className="text-[14px]">{name}</b><span className="text-[12px] opacity-60">• 2h ago</span></div><div className="border-t border-white/10 flex justify-around py-3 text-[13px]"><span>Chat</span><span>Story</span></div></div>);
-  return (<div className="relative h-[600px] bg-gradient-to-b from-[#4a3aff] via-[#b04ac8] to-[#ff8a5c] text-white"><div className="flex gap-1 p-2.5">{[0, 1, 2, 3].map((i) => (<div key={i} className="h-[2.5px] flex-1 bg-white/30 rounded-full"><div className={`h-full rounded-full ${i === 0 ? "w-full bg-white" : ""}`} /></div>))}</div><div className="flex items-center gap-2 px-3"><div className="p-[2px] rounded-full bg-white/80"><Avatar name={name} size="w-8 h-8" /></div><b className="text-[14px]">{name}</b><span className="text-[13px] opacity-70">2h • 📍 Dhaka</span><span className="ml-auto">{I.x}</span></div><p className="absolute bottom-28 w-full text-center text-[24px] font-bold px-6 drop-shadow-lg">{msgs[0]?.text}</p><div className="absolute bottom-4 w-full px-4 flex items-center gap-3"><div className="flex-1 border border-white rounded-full py-2.5 px-4 text-[14px]">Send message</div><span className="text-white">{I.heart("none", "#fff")}</span><span>{I.share}</span></div></div>);
+  return (<div className="relative h-[600px] bg-gradient-to-b from-[#4a3aff] via-[#b04ac8] to-[#ff8a5c] text-white"><div className="flex gap-1 p-2.5">{[0, 1, 2, 3].map((i) => (<div key={i} className="h-[2.5px] flex-1 bg-white/30 rounded-full"><div className={`h-full rounded-full ${i === 0 ? "w-full bg-white" : ""}`} /></div>))}</div><div className="flex items-center gap-2 px-3"><div className="p-[2px] rounded-full bg-white/80"><Avatar name={name} size="w-8 h-8" /></div><b className="text-[14px]">{name}</b><span className="text-[13px] opacity-70">2h • <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="inline"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg> Dhaka</span><span className="ml-auto">{I.x}</span></div><p className="absolute bottom-28 w-full text-center text-[24px] font-bold px-6 drop-shadow-lg">{msgs[0]?.text}</p><div className="absolute bottom-4 w-full px-4 flex items-center gap-3"><div className="flex-1 border border-white rounded-full py-2.5 px-4 text-[14px]">Send message</div><span className="text-white">{I.heart("none", "#fff")}</span><span>{I.share}</span></div></div>);
 }
 
 function EmailView({ slug, name, msgs }: any) {
@@ -439,7 +447,8 @@ function EmailView({ slug, name, msgs }: any) {
 }
 
 function NotifView({ name, msgs }: any) {
-  return (<div className="relative h-[600px] text-white overflow-hidden" style={{ background: "linear-gradient(180deg,#3b3b6d 0%,#1a1a2e 55%,#000 100%)" }}><StatusBar notch={false} /><div className="text-center mt-4"><div className="text-[11px] opacity-70">Tuesday, September 26</div><div className="text-[68px] font-bold leading-none tracking-tight">09:41</div></div><div className="px-3 space-y-2 mt-3">{msgs.slice(0, 3).map((m: Msg, i: number) => (<div key={i} className="rounded-[24px] p-3.5 flex gap-2.5" style={{ background: "rgba(255,255,255,0.22)", backdropFilter: "blur(30px)" }}><div className="w-10 h-10 rounded-[11px] bg-gradient-to-br from-green-400 to-green-600 shrink-0 flex items-center justify-center font-bold">M</div><div className="text-[13.5px] flex-1"><div className="flex justify-between text-[11.5px] opacity-70"><span className="uppercase font-semibold">Messages</span><span>now</span></div><b>{name}</b><br /><span className="opacity-90">{m.text}</span></div></div>))}<div className="rounded-[24px] p-3.5 flex gap-2.5 items-center" style={{ background: "rgba(255,255,255,0.22)", backdropFilter: "blur(30px)" }}><div className="w-10 h-10 rounded-[11px] bg-gradient-to-br from-red-400 to-red-600 shrink-0" /><div className="text-[13px]"><b>+2 more notifications</b></div></div></div><div className="absolute bottom-2 w-full flex justify-center"><div className="w-32 h-1 rounded-full bg-white/80" /></div></div>);
+  const barTime = useContext(BarCtx);
+  return (<div className="relative h-[600px] text-white overflow-hidden" style={{ background: "linear-gradient(180deg,#3b3b6d 0%,#1a1a2e 55%,#000 100%)" }}><StatusBar notch={false} /><div className="text-center mt-4"><div className="text-[11px] opacity-70">Tuesday, September 26</div><div className="text-[68px] font-bold leading-none tracking-tight">{barTime}</div></div><div className="px-3 space-y-2 mt-3">{msgs.slice(0, 3).map((m: Msg, i: number) => (<div key={i} className="rounded-[24px] p-3.5 flex gap-2.5" style={{ background: "rgba(255,255,255,0.22)", backdropFilter: "blur(30px)" }}><div className="w-10 h-10 rounded-[11px] bg-gradient-to-br from-green-400 to-green-600 shrink-0 flex items-center justify-center font-bold">M</div><div className="text-[13.5px] flex-1"><div className="flex justify-between text-[11.5px] opacity-70"><span className="uppercase font-semibold">Messages</span><span>now</span></div><b>{name}</b><br /><span className="opacity-90">{m.text}</span></div></div>))}<div className="rounded-[24px] p-3.5 flex gap-2.5 items-center" style={{ background: "rgba(255,255,255,0.22)", backdropFilter: "blur(30px)" }}><div className="w-10 h-10 rounded-[11px] bg-gradient-to-br from-red-400 to-red-600 shrink-0" /><div className="text-[13px]"><b>+2 more notifications</b></div></div></div><div className="absolute bottom-2 w-full flex justify-center"><div className="w-32 h-1 rounded-full bg-white/80" /></div></div>);
 }
 
 function ToolView({ slug, name }: any) {
@@ -486,11 +495,11 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
   const [dark, setDark] = useState(true);
   const [frameless, setFrameless] = useState(true);
   const [msgs, setMsgs] = useState<Msg[]>([
-    { me: false, text: "Hey, what are you doing?", time: "09:41" },
-    { me: true, text: "Just figuring out Mockly!", time: "09:42", seen: "seen" },
+    { me: false, text: "Hey, what are you doing?", time: "9:41 AM" },
+    { me: true, text: "Just figuring out Mockly!", time: "9:42 AM", seen: "seen" },
   ]);
   const [draft, setDraft] = useState("");
-  const [draftTime, setDraftTime] = useState("09:44");
+  const [draftTime, setDraftTime] = useState("9:44 AM");
   const [dateLabel, setDateLabel] = useState("Today");
   const [barTime, setBarTime] = useState("9:41");
   const [asMe, setAsMe] = useState(false);
