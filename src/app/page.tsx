@@ -26,8 +26,19 @@ function Group({ title, items, icon, id }: { title: string; items: typeof chat; 
 }
 
 export default function Home() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "Fakie — Fake Chat & Screenshot Generator",
+    url: process.env.NEXT_PUBLIC_SITE_URL || "https://fakie.app",
+    applicationCategory: "DesignApplication",
+    operatingSystem: "Any",
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    description: "Make realistic fake chats, posts, comments, stories, emails and notification screenshots. Free, no signup.",
+  };
   return (
     <div className="min-h-screen bg-white text-black">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <header className="border-b border-black/10 sticky top-0 bg-white/90 backdrop-blur z-10">
         <div className="max-w-6xl mx-auto flex items-center gap-6 px-6 py-3.5">
           <Link href="/" className="text-[22px] font-extrabold tracking-tight">fakie<span className="text-green-500">.</span></Link>
