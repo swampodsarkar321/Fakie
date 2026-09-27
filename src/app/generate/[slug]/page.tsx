@@ -537,18 +537,16 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
   }, [adGate, gateMode]);
   useEffect(() => {
     if (!adGate || !adClicked || count <= 0) return;
-    if (document.hidden) { setTabWarn(true); return; }
     const t = setTimeout(() => setCount((c) => c - 1), 1000);
     return () => clearTimeout(t);
   }, [adGate, adClicked, count]);
-  useEffect(() => {
-    const onVis = () => { if (adGate && adClicked && document.hidden) setTabWarn(true); };
-    document.addEventListener("visibilitychange", onVis);
-    return () => document.removeEventListener("visibilitychange", onVis);
-  }, [adGate, adClicked]);
   const SMARTLINK = "https://www.profitableratecpmnetwork.com/kx4e786uky?key=c4ecf6dfa0afd701bd35e01f02d0e4e9";
   const openAd = () => {
-    window.open(SMARTLINK, "_blank", "noopener");
+    const w = window.open(SMARTLINK, "_blank", "noopener");
+    if (!w) {
+      alert("Popup blocked! Please allow popups for this site, then tap again.");
+      return;
+    }
     setAdClicked(true);
     setTabWarn(false);
   };
@@ -717,10 +715,9 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
       {adGate && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-3xl p-6 w-full max-w-[340px] text-center">
-            <b className="text-[17px]">{gateMode === "hd" ? "Watch 2 ads for HD download" : "Watch 1 ad for Standard download"}</b>
-            <p className="text-[13px] text-zinc-500 mt-1">Ad {adStep} of {need} • Stay on this tab until verified</p>
+            <b className="text-[17px]">Watch 2 ads for HD download</b>
+            <p className="text-[13px] text-zinc-500 mt-1">Ad {adStep} of 2 • Keep this tab open while verifying</p>
             <div className="flex gap-1.5 mt-3">{Array.from({ length: need }, (_, k) => k + 1).map((s) => (<div key={s} className={`h-1.5 flex-1 rounded-full ${s < adStep || (s === adStep && adClicked && count <= 0) ? "bg-green-500" : s === adStep ? "bg-black" : "bg-zinc-200"}`} />))}</div>
-            {tabWarn && <div className="text-[13px] font-bold text-red-600 mt-3">You left the tab — timer paused. Stay here to verify.</div>}
             {!adClicked ? (
               <button onClick={openAd} className="w-full bg-[#0b57d0] text-white font-bold py-3 rounded-xl mt-4">Open Sponsor Ad {adStep}/2 ↗</button>
             ) : count > 0 ? (
