@@ -35,9 +35,9 @@ const I = {
 
 function StatusBar({ dark = true, notch = true }: { dark?: boolean; notch?: boolean }) {
   return (
-    <div className={`flex items-center justify-between px-6 pt-3 pb-1 text-[12px] font-semibold ${dark ? "text-white" : "text-black"}`}>
-      <span>09:41</span>
-      {notch && <div className="w-24 h-[22px] bg-black rounded-full border border-white/10" />}
+    <div className={`relative flex items-center justify-between pl-7 pr-6 pt-3.5 pb-1 text-[14.5px] font-semibold tracking-tight ${dark ? "text-white" : "text-black"}`} style={{ fontFamily: "-apple-system,BlinkMacSystemFont,'SF Pro Text',Inter,sans-serif" }}>
+      <span>9:41</span>
+      {notch && <div className="absolute left-1/2 -translate-x-1/2 top-2 w-[112px] h-[28px] bg-black rounded-full" />}
       <span className="flex items-center gap-1.5">{I.signal}{I.wifi}{I.battery}</span>
     </div>
   );
@@ -99,9 +99,9 @@ function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified, 
   }
   if (ms || ig) {
     return (
-      <div className="bg-white text-[#050505]">
-        <div className="flex items-center justify-between px-6 pt-3 pb-1 text-[13px] font-semibold text-black"><span>09:13</span><span className="flex items-center gap-1.5">{I.signal}{I.wifi}{I.battery}</span></div>
-        <div className="flex items-center gap-2 px-2 py-2 border-b border-black/10">{I.back("#0084ff")}
+      <div className="bg-white text-[#050505]" style={{ fontFamily: "-apple-system,BlinkMacSystemFont,'SF Pro Text',Inter,sans-serif" }}>
+        <StatusBar dark={false} />
+        <div className="flex items-center gap-2 px-2 py-1.5 border-b border-black/10">{I.back("#000")}
           <div className="relative"><Avatar name={name} img={avatar} /><div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full" /></div>
           <div className="leading-tight"><div className="font-semibold text-[16px] flex items-center gap-1">{name}{verified && <Verified />}</div><div className="text-[12px] text-zinc-500">Active now</div></div>
           <div className="ml-auto flex items-center gap-3 pr-2">{I.phone()}{I.video()}</div>
@@ -121,38 +121,38 @@ function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified, 
     );
   }
   if (wa) return (
-    <div className="bg-[#0b141a] text-white">
-      <StatusBar notch={false} /><div className="flex items-center gap-2 px-3 py-2 bg-[#1f2c34]/80 backdrop-blur-xl" style={{ background: "rgba(31,44,52,0.75)" }}>{I.back("#aebac1")}<Avatar name={name} img={avatar} /><div className="flex-1 leading-tight"><div className="text-[15px] flex items-center gap-1">{name}{verified && <Verified size={13} />}</div><div className="text-[12px] text-[#8696a0]">online</div></div><div className="flex gap-4 text-[#aebac1]">{I.video("#aebac1")}{I.phone("#aebac1")}</div></div>
-      <div className="p-3 space-y-1.5 min-h-[430px]" style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)", backgroundSize: "18px 18px" }}>
-        <div className="flex justify-center"><span className="bg-[#182229] text-[11px] px-3 py-1 rounded-full text-[#ffd279] flex items-center gap-1">{I.lock} end-to-end encrypted</span></div>
-        <div className="flex justify-center"><span className="bg-[#182229] text-[11px] px-3 py-1 rounded-full text-zinc-300">{dateLabel || "TODAY"}</span></div>
+    <div className="bg-[#0b141a] text-white" style={{ fontFamily: "'Segoe UI',Helvetica Neue,Helvetica,Arial,sans-serif" }}>
+      <StatusBar notch={false} /><div className="flex items-center gap-1.5 px-2 py-1.5 bg-[#1f2c34]">{I.back("#aebac1")}<Avatar name={name} img={avatar} /><div className="flex-1 leading-tight ml-1"><div className="text-[16px] flex items-center gap-1">{name}{verified && <Verified size={13} />}</div><div className="text-[12.5px] text-[#8696a0]">online</div></div><div className="flex gap-5 pr-2 text-[#aebac1]">{I.video("#aebac1")}{I.phone("#aebac1")}</div></div>
+      <div className="p-3 space-y-1.5 min-h-[430px]" style={{ backgroundColor: "#0b141a", backgroundImage: "radial-gradient(rgba(134,150,160,0.08) 1px, transparent 1.5px)", backgroundSize: "20px 20px" }}>
+        <div className="flex justify-center"><span className="bg-[#182229] text-[12px] px-3 py-1.5 rounded-lg text-[#ffd279] flex items-center gap-1 max-w-[90%] text-center">Messages are end-to-end encrypted. No one outside of this chat can read them.</span></div>
+        <div className="flex justify-center"><span className="bg-[#182229] text-[12px] px-3 py-1.5 rounded-lg text-[#8696a0]">{dateLabel === "Today" ? "TODAY" : dateLabel?.toUpperCase()}</span></div>
         {msgs.map((m: Msg, i: number) => (
-          <div key={i} className={`flex ${m.me ? "justify-end" : "justify-start"}`}><div className={`${m.me ? "bg-[#005c4b]" : "bg-[#1f2c34]"} rounded-[22px] px-3 py-2 max-w-[80%] text-[14.5px] relative shadow-sm`}><p className="pr-12">{m.text}</p><span className="absolute bottom-1.5 right-3 text-[11px] text-[#8696a0] flex items-center gap-0.5">{m.time}{m.me && (m.seen === "seen" ? <span className="text-[#53bdeb]">{I.check2}</span> : m.seen === "delivered" ? <span className="text-[#8696a0]">{I.check2}</span> : <span className="text-[#8696a0]">✓</span>)}</span></div></div>
+          <div key={i} className={`flex ${m.me ? "justify-end" : "justify-start"}`}><div className={`${m.me ? "bg-[#005c4b]" : "bg-[#1f2c34]"} rounded-lg px-2.5 py-1.5 max-w-[80%] text-[14.8px] leading-[1.4] relative shadow-sm`}><span className="absolute top-0 w-2 h-3" style={m.me ? { right: -5, background: "#005c4b", clipPath: "polygon(0 0, 0 100%, 100% 0)" } : { left: -5, background: "#1f2c34", clipPath: "polygon(100% 0, 100% 100%, 0 0)" }} /><p className="pr-14">{m.text}</p><span className="absolute bottom-1 right-2 text-[11px] text-[#8696a0] flex items-center gap-1">{m.time}{m.me && (m.seen === "seen" ? <span className="text-[#53bdeb]"><svg width="15" height="10" viewBox="0 0 20 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M1 6.5L4.5 10 11 2M8 6.5l3.5 3.5L18 2"/></svg></span> : m.seen === "delivered" ? <span className="text-[#8696a0]"><svg width="15" height="10" viewBox="0 0 20 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M1 6.5L4.5 10 11 2M8 6.5l3.5 3.5L18 2"/></svg></span> : <span className="text-[#8696a0]">✓</span>)}</span></div></div>
         ))}
-        {img && <div className="flex justify-end"><img src={img} className="rounded-[22px] max-w-[80%] object-cover" /></div>}
+        {img && <div className="flex justify-end"><div className="max-w-[80%] rounded-lg overflow-hidden bg-[#005c4b] p-1"><img src={img} className="rounded-md w-full object-cover" /><div className="text-[11px] text-[#8696a0] text-right px-1 py-0.5">9:41 ✓✓</div></div></div>}
       </div>
-      <div className="px-3 pb-4 pt-1"><div className="flex gap-2 items-center rounded-full px-2 py-1.5" style={{ background: "rgba(31,44,52,0.7)", backdropFilter: "blur(20px)" }}><div className="w-9 h-9 rounded-full bg-[#1f2c34] flex items-center justify-center text-[#aebac1] text-xl">+</div><div className="flex-1 text-[15px] text-[#8696a0]">Message</div><div className="w-10 h-10 rounded-full bg-[#00a884] flex items-center justify-center shrink-0">{I.micWa}</div></div></div>
+      <div className="px-2 pb-4 pt-1 flex gap-2 items-center"><div className="flex-1 flex gap-2 items-center rounded-full bg-[#1f2c34] px-2 py-1.5"><span className="text-[#8696a0] pl-1">☺</span><div className="flex-1 text-[16px] text-[#8696a0]">Message</div><div className="text-[#8696a0] pr-1">{I.clip}</div></div><div className="w-11 h-11 rounded-full bg-[#00a884] flex items-center justify-center shrink-0">{I.micWa}</div></div>
     </div>
   );
   if (im) return (
-    <div className="bg-white text-black"><StatusBar dark={false} /><div className="px-4 py-2 text-center text-[12px] text-zinc-400">Text Message • RCS • Today 09:41</div>
-      <div className="flex items-center gap-2 px-3 py-2" style={{ background: "rgba(255,255,255,0.7)", backdropFilter: "blur(20px)" }}>{I.back("#0a84ff")}<div className="flex-1 text-center"><div className="font-semibold text-[15px]">{name}</div><div className="text-[11px] text-zinc-400">3 people typing…</div></div><div className="w-[11px]" /></div>
-      <div className="px-3 py-3 space-y-1.5 min-h-[420px] bg-white">{msgs.map((m: Msg, i: number) => (<div key={i} className={`flex ${m.me ? "justify-end" : "justify-start"}`}><div className={`${m.me ? "bg-[#0a84ff] text-white" : "bg-[#e9e9eb] text-black"} px-3.5 py-2 rounded-[22px] max-w-[75%] text-[16px]`}>{m.text}</div></div>))}
-        <div className="bg-[#f2f2f7] rounded-2xl p-3 max-w-[85%]"><div className="font-semibold text-[14px]">Poll: Dinner tonight?</div><div className="mt-2 space-y-1.5 text-[13px]"><div className="bg-white rounded-lg px-2.5 py-1.5 border border-black/10">Pizza — 2 votes</div><div className="bg-white rounded-lg px-2.5 py-1.5 border border-black/10">Sushi — 1 vote</div></div></div>
-        <div className="text-[11px] text-zinc-400 text-right font-medium">Delivered • Translated</div></div>
-      <div className="p-3 flex gap-2 items-center"><div className="text-2xl text-zinc-400">+</div><div className="flex-1 rounded-full px-4 py-2 text-[15px] text-zinc-400" style={{ background: "rgba(242,242,247,0.8)", backdropFilter: "blur(20px)" }}>iMessage</div>{I.sendUp}</div>
+    <div className="bg-white text-black" style={{ fontFamily: "-apple-system,BlinkMacSystemFont,'SF Pro Text',Inter,sans-serif" }}><StatusBar dark={false} />
+      <div className="flex items-center px-2 py-1.5 border-b border-black/10">{I.back("#0a84ff")}<div className="flex-1 flex flex-col items-center -ml-3"><Avatar name={name} img={avatar} size="w-10 h-10" /><div className="font-semibold text-[11px] mt-0.5 flex items-center gap-0.5">{name}</div></div><span className="text-[#0a84ff] pr-2"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M4 8.5A3.5 3.5 0 0 1 7.5 5h9A3.5 3.5 0 0 1 20 8.5v7a3.5 3.5 0 0 1-3.5 3.5h-5.2l-4 3.2c-.5.4-1.3.1-1.3-.6z"/></svg></span></div>
+      <div className="px-3 py-3 space-y-1 min-h-[420px] bg-white"><div className="text-center text-[11px] text-zinc-400 font-medium">{dateLabel} 9:41 AM</div>{msgs.map((m: Msg, i: number) => (<div key={i} className={`flex ${m.me ? "justify-end" : "justify-start"}`}><div className={`${m.me ? "bg-[#1982FC] text-white rounded-br-[4px]" : "bg-[#e9e9eb] text-black rounded-bl-[4px]"} px-3 py-1.5 rounded-[18px] max-w-[72%] text-[16px] leading-[1.35]`}>{m.text}</div></div>))}
+        {img && <div className="flex justify-end"><img src={img} className="rounded-[18px] max-w-[72%] object-cover" /></div>}
+        {(() => { const last = [...msgs].reverse().find((m) => m.me && m.seen); return last ? (<div className="text-[11px] text-zinc-400 text-right font-medium pr-1">{last.seen === "seen" ? "Read" : last.seen === "delivered" ? "Delivered" : "Sent"} {last.time}</div>) : null; })()}</div>
+      <div className="p-2.5 flex gap-2 items-center border-t border-black/10"><div className="w-8 h-8 rounded-full bg-zinc-200 text-zinc-500 flex items-center justify-center text-xl font-light">+</div><div className="flex-1 rounded-full px-4 py-2 text-[16px] text-zinc-400 border border-black/20">iMessage</div><span className="text-[#1982FC]"><svg width="30" height="30" viewBox="0 0 30 30"><circle cx="15" cy="15" r="14" fill="currentColor"/><path d="M15 21V9M10 14l5-5 5 5" stroke="#fff" strokeWidth="2.2" fill="none" strokeLinecap="round"/></svg></span></div>
     </div>
   );
   if (dc) return (
-    <div className="bg-[#313338] text-zinc-100"><div className="px-4 py-3 font-bold border-b border-black/40 text-[15px]"># general</div>
+    <div className="bg-[#313338] text-zinc-100"><StatusBar notch={false} /><div className="px-4 py-2.5 font-bold border-b border-black/40 text-[16px] flex items-center gap-1.5"><span className="text-zinc-400 text-[20px] font-light">#</span> general</div>
       <div className="p-4 space-y-4 min-h-[430px]">{msgs.map((m: Msg, i: number) => (<div key={i} className="flex gap-3"><Avatar name={m.me ? "You" : name} size="w-10 h-10" img={m.me ? null : avatar} /><div><div className="text-[14px]"><b>{m.me ? "you" : name}</b> <span className="text-[11px] text-zinc-400">Today at {m.time}</span></div><p className="text-[15px] text-zinc-200">{m.text}</p></div></div>))}</div>
       <div className="p-3"><div className="bg-[#383a40] rounded-lg px-4 py-2.5 text-[14px] text-zinc-400">Message #general</div></div>
     </div>
   );
   if (tg) return (
-    <div className="bg-[#7ea8c9]"><StatusBar notch={false} /><div className="px-3 py-2 bg-white flex gap-2 items-center"><Avatar name={name} img={avatar} /><div><div className="font-semibold text-[15px] text-black flex items-center gap-1">{name}{verified && <Verified size={13} />}</div><div className="text-[13px] text-[#3d9add]">online</div></div><div className="ml-auto text-[#3d9add]">{I.dots()}</div></div>
-      <div className="p-3 space-y-1.5 min-h-[430px]">{msgs.map((m: Msg, i: number) => (<div key={i} className={`flex ${m.me ? "justify-end" : "justify-start"}`}><div className="bg-white text-black px-2.5 py-1.5 rounded-lg max-w-[80%] text-[15px] shadow-sm relative"><p className="pr-12">{m.text}</p><span className="absolute bottom-1 right-2 text-[11px] text-[#3d9add]">{m.time} ✓✓</span></div></div>))}</div>
-      <div className="bg-white px-4 py-3 flex gap-3 items-center text-[#8a8a8e] text-[15px]">{I.clip} Message {I.micWa}</div>
+    <div className="bg-[#a8c5dd]" style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.25) 1px, transparent 1.5px)", backgroundSize: "22px 22px" }}><StatusBar notch={false} /><div className="px-2 py-2 bg-white flex gap-2 items-center shadow-sm">{I.back("#3d9add")}<Avatar name={name} img={avatar} /><div className="ml-1"><div className="font-semibold text-[16px] text-black flex items-center gap-1">{name}{verified && <Verified size={13} />}</div><div className="text-[13px] text-[#3d9add]">online</div></div><div className="ml-auto text-[#3d9add] pr-1">{I.dots()}</div></div>
+      <div className="p-2.5 space-y-1 min-h-[430px]">{msgs.map((m: Msg, i: number) => (<div key={i} className={`flex ${m.me ? "justify-end" : "justify-start"}`}><div className={`${m.me ? "bg-[#d9fdd3]" : "bg-white"} text-black px-2.5 py-1.5 rounded-lg rounded-tl-lg max-w-[80%] text-[15.5px] leading-[1.4] shadow-sm relative`}><p className="pr-14">{m.text}</p><span className="absolute bottom-1 right-2 text-[11px] text-[#6aa84f] flex items-center gap-0.5">{m.time}{m.me && <svg width="14" height="10" viewBox="0 0 20 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M1 6.5L4.5 10 11 2M8 6.5l3.5 3.5L18 2"/></svg>}</span></div></div>))}</div>
+      <div className="bg-white px-3 py-2.5 flex gap-2.5 items-center text-[16px]"><span className="text-zinc-400">☺</span><div className="flex-1 text-zinc-400">Message</div><div className="text-[#8a8a8e]">{I.clip}</div><span className="text-[#3d9add]"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M3 20l18-8L3 4v6l12 2-12 2z"/></svg></span></div>
     </div>
   );
   // ---- 2026 dedicated: X / TikTok / Snapchat / Signal / Slack / Reddit ----
