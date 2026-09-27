@@ -69,7 +69,7 @@ export default function Home() {
       <section className="max-w-6xl mx-auto px-6 pt-14 pb-10 grid md:grid-cols-2 gap-10 items-center">
         <div>
           <div className="inline-flex items-center gap-1.5 bg-zinc-100 border border-black/10 rounded-full px-3.5 py-1.5 text-[12.5px] font-semibold"><span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />50+ generators • Free, no signup</div>
-          <h1 className="text-[48px] leading-[1.02] font-extrabold tracking-[-0.03em] mt-4">Fake chat<br />generator</h1>
+          <h1 className="text-[48px] leading-[1.02] font-extrabold tracking-[-0.03em] mt-4">Fake chat &<br />screenshot generator</h1>
           <p className="mt-4 text-[17px] leading-relaxed text-zinc-600">Make realistic chat, post, comment, story, email and notification screenshots for any app.</p>
           <ul className="mt-5 space-y-2.5 text-[15px] font-medium">
             <li className="flex items-center gap-2.5"><Check />Pixel-accurate layouts for every app</li>
