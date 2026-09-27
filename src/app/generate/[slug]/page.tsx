@@ -1,10 +1,11 @@
 "use client";
-import { use, useEffect, useRef, useState } from "react";
+import { createContext, use, useContext, useEffect, useRef, useState } from "react";
 import { toPng } from "html-to-image";
 import { getGenerator } from "@/lib/generators";
 import AdSlot from "@/components/AdSlot";
 
 type Msg = { me: boolean; text: string; time: string; seen?: "sent" | "delivered" | "seen" };
+const BarCtx = createContext("9:41");
 
 // ---------- SVG icon set (no emoji anywhere in preview) ----------
 const S = (p: any) => p;
@@ -34,9 +35,10 @@ const I = {
 };
 
 function StatusBar({ dark = true, notch = true }: { dark?: boolean; notch?: boolean }) {
+  const t = useContext(BarCtx);
   return (
     <div className={`relative flex items-center justify-between pl-7 pr-6 pt-3.5 pb-1 text-[14.5px] font-semibold tracking-tight ${dark ? "text-white" : "text-black"}`} style={{ fontFamily: "-apple-system,BlinkMacSystemFont,'SF Pro Text',Inter,sans-serif" }}>
-      <span>9:41</span>
+      <span>{t}</span>
       {notch && <div className="absolute left-1/2 -translate-x-1/2 top-2 w-[112px] h-[28px] bg-black rounded-full" />}
       <span className="flex items-center gap-1.5">{I.signal}{I.wifi}{I.battery}</span>
     </div>
@@ -52,6 +54,7 @@ const Verified = ({ size = 15 }: { size?: number }) => (
 
 // ---------- CHAT ----------
 function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified, dateLabel }: any) {
+  const barTime = useContext(BarCtx);
   const wa = slug.includes("whatsapp"), im = slug.includes("imessage"), dc = slug.includes("discord"), tg = slug.includes("telegram"), ms = slug.includes("messenger"), ig = slug.includes("instagram"), fv = slug.includes("fiverr");
   if (fv) {
     return (
@@ -107,7 +110,7 @@ function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified, 
           <div className="ml-auto flex items-center gap-3 pr-2">{I.phone()}{I.video()}</div>
         </div>
         <div className="px-4 py-3 space-y-2 min-h-[460px]">
-          <div className="text-center text-[12px] text-zinc-500">{slug.includes("messenger") ? `${dateLabel === "Today" ? "September 26, 2026" : dateLabel} at 9:16 AM` : dateLabel}</div>
+          <div className="text-center text-[12px] text-zinc-500">{slug.includes("messenger") ? `${dateLabel === "Today" ? "September 26, 2026" : dateLabel} at ${barTime} AM` : dateLabel}</div>
           {msgs.map((m: Msg, i: number) => m.me ? (
             <div key={i} className="flex justify-end"><div className="text-white text-[15px] px-3 py-2 rounded-[18px] max-w-[75%]" style={{ background: ms ? "linear-gradient(90deg,#a334fa,#0084ff)" : "#3797f0" }}>{m.text}</div></div>
           ) : (
@@ -137,7 +140,7 @@ function ChatView({ slug, name, msgs, self, other, dark, img, avatar, verified, 
   if (im) return (
     <div className="bg-white text-black" style={{ fontFamily: "-apple-system,BlinkMacSystemFont,'SF Pro Text',Inter,sans-serif" }}><StatusBar dark={false} />
       <div className="flex items-center px-2 py-1.5 border-b border-black/10">{I.back("#0a84ff")}<div className="flex-1 flex flex-col items-center -ml-3"><Avatar name={name} img={avatar} size="w-10 h-10" /><div className="font-semibold text-[11px] mt-0.5 flex items-center gap-0.5">{name}</div></div><span className="text-[#0a84ff] pr-2"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M4 8.5A3.5 3.5 0 0 1 7.5 5h9A3.5 3.5 0 0 1 20 8.5v7a3.5 3.5 0 0 1-3.5 3.5h-5.2l-4 3.2c-.5.4-1.3.1-1.3-.6z"/></svg></span></div>
-      <div className="px-3 py-3 space-y-1 min-h-[420px] bg-white"><div className="text-center text-[11px] text-zinc-400 font-medium">{dateLabel} 9:41 AM</div>{msgs.map((m: Msg, i: number) => (<div key={i} className={`flex ${m.me ? "justify-end" : "justify-start"}`}><div className={`${m.me ? "bg-[#1982FC] text-white rounded-br-[4px]" : "bg-[#e9e9eb] text-black rounded-bl-[4px]"} px-3 py-1.5 rounded-[18px] max-w-[72%] text-[16px] leading-[1.35]`}>{m.text}</div></div>))}
+      <div className="px-3 py-3 space-y-1 min-h-[420px] bg-white"><div className="text-center text-[11px] text-zinc-400 font-medium">{dateLabel} {barTime} AM</div>{msgs.map((m: Msg, i: number) => (<div key={i} className={`flex ${m.me ? "justify-end" : "justify-start"}`}><div className={`${m.me ? "bg-[#1982FC] text-white rounded-br-[4px]" : "bg-[#e9e9eb] text-black rounded-bl-[4px]"} px-3 py-1.5 rounded-[18px] max-w-[72%] text-[16px] leading-[1.35]`}>{m.text}</div></div>))}
         {img && <div className="flex justify-end"><img src={img} className="rounded-[18px] max-w-[72%] object-cover" /></div>}
         {(() => { const last = [...msgs].reverse().find((m) => m.me && m.seen); return last ? (<div className="text-[11px] text-zinc-400 text-right font-medium pr-1">{last.seen === "seen" ? "Read" : last.seen === "delivered" ? "Delivered" : "Sent"} {last.time}</div>) : null; })()}</div>
       <div className="p-2.5 flex gap-2 items-center border-t border-black/10"><div className="w-8 h-8 rounded-full bg-zinc-200 text-zinc-500 flex items-center justify-center text-xl font-light">+</div><div className="flex-1 rounded-full px-4 py-2 text-[16px] text-zinc-400 border border-black/20">iMessage</div><span className="text-[#1982FC]"><svg width="30" height="30" viewBox="0 0 30 30"><circle cx="15" cy="15" r="14" fill="currentColor"/><path d="M15 21V9M10 14l5-5 5 5" stroke="#fff" strokeWidth="2.2" fill="none" strokeLinecap="round"/></svg></span></div>
@@ -480,6 +483,7 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
   const [draft, setDraft] = useState("");
   const [draftTime, setDraftTime] = useState("09:44");
   const [dateLabel, setDateLabel] = useState("Today");
+  const [barTime, setBarTime] = useState("9:41");
   const [asMe, setAsMe] = useState(false);
   const [img, setImg] = useState<string | null>(null);
   const [avatar, setAvatar] = useState<string | null>(null);
@@ -631,7 +635,10 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
           <input value={draftTime} onChange={(e) => setDraftTime(e.target.value)} placeholder="09:44" className="w-[68px] bg-white border border-black/15 rounded-xl px-2 py-2.5 text-sm outline-none focus:border-black" />
           <button onClick={add} className="bg-black text-white w-11 shrink-0 rounded-xl font-bold text-lg hover:bg-zinc-800">+</button>
         </div>
-        <label className="block text-[13px] font-semibold">Date label<input value={dateLabel} onChange={(e) => setDateLabel(e.target.value)} placeholder="Today" className="mt-1.5 w-full bg-[#f4f4f5] border border-black/10 rounded-xl px-3.5 py-2 text-[13px] outline-none focus:border-black font-normal" /></label>
+        <div className="grid grid-cols-2 gap-2">
+          <label className="block text-[13px] font-semibold">Date label<input value={dateLabel} onChange={(e) => setDateLabel(e.target.value)} placeholder="Today" className="mt-1.5 w-full bg-[#f4f4f5] border border-black/10 rounded-xl px-3.5 py-2 text-[13px] outline-none focus:border-black font-normal" /></label>
+          <label className="block text-[13px] font-semibold">Status time<input value={barTime} onChange={(e) => setBarTime(e.target.value)} placeholder="9:41" className="mt-1.5 w-full bg-[#f4f4f5] border border-black/10 rounded-xl px-3.5 py-2 text-[13px] outline-none focus:border-black font-normal" /></label>
+        </div>
         <label className="flex items-center justify-center gap-2 text-[13px] bg-white border-[1.5px] border-dashed border-black/20 rounded-xl p-3 cursor-pointer font-semibold text-zinc-600 hover:border-black hover:text-black">Add image
           <input type="file" accept="image/*" className="hidden" onChange={(e) => onFile(e.target.files?.[0])} />
         </label>
@@ -663,6 +670,7 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
       </div>
       <div className="flex-1 flex items-start justify-center p-6 bg-white border border-black/10 rounded-2xl shadow-sm" style={{ backgroundImage: "radial-gradient(#d4d4d8 1px, transparent 1px)", backgroundSize: "20px 20px" }}>
         <div>
+        <BarCtx.Provider value={barTime}>
         <div ref={ref} data-protected="1" className={`${frameless ? "rounded-xl" : "rounded-[3rem] border-[12px] border-black shadow-[0_0_0_2px_#e5e5e5]"} w-[375px] overflow-hidden relative select-none`}>
           {gen.kind === "ai-chat" ? <AIView slug={slug} msgs={msgs} />
             : gen.kind === "post" ? <PostView slug={slug} name={name} msgs={msgs} img={img} avatar={avatar} verified={verified} />
@@ -674,6 +682,7 @@ export default function GeneratePage({ params }: { params: Promise<{ slug: strin
             : <ChatView slug={slug} name={name} msgs={msgs} self={gen.bubbleSelf} other={gen.bubbleOther} dark={dark} img={img} avatar={avatar} verified={verified} dateLabel={dateLabel} />}
           {wmOn && <div className="absolute bottom-1.5 right-1.5 bg-black/55 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md backdrop-blur-sm">fakie.</div>}
         </div>
+        </BarCtx.Provider>
         <p className="text-center text-[12px] text-zinc-400 mt-3">HD export • Watch 2 short ads</p>
         <AdSlot slot="preview-bottom" />
         </div>
