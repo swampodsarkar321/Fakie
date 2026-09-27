@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getGenerator, GENERATORS } from "@/lib/generators";
 
-const BASE = process.env.NEXT_PUBLIC_SITE_URL || "https://fakie.app";
+const BASE = process.env.NEXT_PUBLIC_SITE_URL || "https://fakie-three.vercel.app";
 
 export function generateStaticParams() {
   return GENERATORS.map((g) => ({ slug: g.slug }));

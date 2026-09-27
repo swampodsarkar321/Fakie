@@ -46,7 +46,7 @@ export default function Home() {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     name: "Fakie — Fake Chat & Screenshot Generator",
-    url: process.env.NEXT_PUBLIC_SITE_URL || "https://fakie.app",
+    url: process.env.NEXT_PUBLIC_SITE_URL || "https://fakie-three.vercel.app",
     applicationCategory: "DesignApplication",
     operatingSystem: "Any",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },

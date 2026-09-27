@@ -11,7 +11,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://fakie.app"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://fakie-three.vercel.app"),
   title: { default: "Fakie — Fake Chat & Screenshot Generator", template: "%s — Fakie" },
   description: "Make realistic fake chats, posts, comments, stories, emails and notification screenshots. Free fake WhatsApp chat, Instagram post, iMessage and TikTok generator — no signup.",
   keywords: ["fake chat generator", "fake whatsapp chat", "fake whatsapp chat generator", "fake instagram post", "fake imessage generator", "chat screenshot generator", "fake dm generator", "fake tiktok comments", "fake x post generator"],

@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { GENERATORS } from "@/lib/generators";
 
-const BASE = process.env.NEXT_PUBLIC_SITE_URL || "https://fakie.app";
+const BASE = process.env.NEXT_PUBLIC_SITE_URL || "https://fakie-three.vercel.app";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const tools = GENERATORS.map((g) => ({ url: `${BASE}/generate/${g.slug}`, lastModified: new Date(), changeFrequency: "weekly" as const, priority: 0.8 }));
